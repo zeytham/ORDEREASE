@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OrderEase - Campus Marketplace inayounganisha wanafunzi na wauzaji katika Chuo cha Abdulrahman Al-Sumait University. Nunua chakula, snacks, cosmetics na huduma nyingine kwa urahisi.">
+    <meta name="keywords" content="campus marketplace, student vendors, Abdulrahman Al-Sumait University, Tanzania, online ordering, WhatsApp orders">
+    <meta name="author" content="Zeyana Thabit Juma">
+    <meta property="og:title" content="OrderEase - Campus Marketplace">
+    <meta property="og:description" content="Nunua chochote ulichohitaji - Chakula, Snacks, Cosmetics, na huduma za Transport!">
+    <meta property="og:type" content="website">
+    <title>OrderEase - Campus Marketplace | Abdulrahman Al-Sumait University</title>
+    
+    <!-- Preconnect to CDNs -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Minified CSS from CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #22C55E;
+            --primary-dark: #16A34A;
+            --secondary: #0F172A;
+            --sidebar-bg: #1E293B;
+            --content-bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
+            --border: #E2E8F0;
+            --shadow: rgba(0,0,0,0.1);
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--content-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            padding: 2rem 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 4px 0 20px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .logo-section {
+            padding: 0 1.5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+        }
+        
+        .logo-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .logo-text span {
+            color: var(--primary);
+        }
+        
+        .nav-menu {
+            padding: 2rem 0;
+        }
+        
+        .nav-item {
+            margin: 0.5rem 1rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .nav-link i {
+            width: 24px;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .sidebar-footer {
+            padding: 2rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 2rem;
+        }
+        
+        .sidebar-footer p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .sidebar-footer strong {
+            color: var(--primary);
+            display: block;
+            margin-top: 0.5rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+        
+        .topbar {
+            background: var(--card-bg);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--content-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .search-bar:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+        
+        .search-bar input {
+            border: none;
+            outline: none;
+            background: transparent;
+            margin-left: 0.5rem;
+            width: 300px;
+        }
+        
+        .content-area {
+            padding: 2rem;
+        }
+        
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .vendor-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .vendor-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.2);
+            border-color: var(--primary);
+        }
+        
+        /* Image Slideshow */
+        .slideshow-container {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--content-bg), var(--border));
+        }
+        
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            animation: fade 0.5s;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @keyframes fade {
+            from {opacity: 0.6}
+            to {opacity: 1}
+        }
+        
+        .slide-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .dot.active {
+            background: var(--primary);
+            width: 30px;
+            border-radius: 5px;
+        }
+        
+        .slide-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .slide-nav:hover {
+            background: var(--primary);
+        }
+        
+        .slide-nav.prev {
+            left: 10px;
+        }
+        
+        .slide-nav.next {
+            right: 10px;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .vendor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .vendor-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .badge {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .vendor-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .vendor-meta i {
+            color: var(--primary);
+        }
+        
+        .products-preview {
+            margin: 1rem 0;
+        }
+        
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .product-item:hover {
+            padding-left: 10px;
+            background: rgba(34, 197, 94, 0.05);
+        }
+        
+        .price {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+        }
+        
+        .btn-secondary {
+            background: var(--content-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--card-bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 2rem;
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from {opacity: 0}
+            to {opacity: 1}
+        }
+        
+        @keyframes slideUp {
+            from {transform: translateY(50px); opacity: 0}
+            to {transform: translateY(0); opacity: 1}
+        }
+        
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .price-list {
+            margin: 2rem 0;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: var(--content-bg);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .price-item:hover {
+            transform: translateX(5px);
+        }
+        
+        /* Form Section */
+        .form-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 2000;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .search-bar input {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .search-bar input {
+                width: 100%;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars fa-lg"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon">OE</div>
+            <div class="logo-text">Order<span>Ease</span></div>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 0.5rem;">Campus Marketplace</p>
+        </div>
+        
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="#" class="nav-link active" onclick="showPage('home'); return false;">
+                    <i class="fas fa-home"></i>
+                    <span>Nyumbani</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('vendors'); return false;">
+                    <i class="fas fa-store"></i>
+                    <span>Wauzaji</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('categories'); return false;">
+                    <i class="fas fa-th-large"></i>
+                    <span>Categories</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('register'); return false;">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Jiandikishe</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('terms'); return false;">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Terms of Service</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('privacy'); return false;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Privacy Policy</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <p>© 2025 OrderEase</p>
+            <strong>ZEYANA THABIT JUMA</strong>
+            <p style="margin-top: 0.5rem;">Abdulrahman Al-Sumait University</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="topbar">
+            <h2 id="pageTitle">Dashboard</h2>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Tafuta bidhaa au wauzaji..." id="searchInput" onkeyup="searchVendors()">
+            </div>
+        </div>
+        
+        <div class="content-area" id="contentArea">
+            <!-- Dynamic content loads here -->
+        </div>
+    </main>
+
+    <!-- Modal for Product Details -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content loads dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Vendor Data with Images
+        const vendors = [
+            {
+                id: 1,
+                name: "Mama Halima Snacks",
+                category: "Vioksi & Snacks",
+                location: "Mlimani Hostel",
+                phone: "255712345678",
+                rating: 4.8,
+                images: [
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500",
+                    "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=500",
+                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500",
+                    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500"
+                ],
+                products: [
+                    {name: "Chips Mayai (Large)", price: "3,000"},
+                    {name: "Chips Mayai (Medium)", price: "2,000"},
+                    {name: "Sambusa (5pcs)", price: "2,000"},
+                    {name: "Sambusa (10pcs)", price: "3,500"},
+                    {name: "Mandazi (4pcs)", price: "1,000"},
+                    {name: "Soda (Pepsi/Coke)", price: "1,500"},
+                    {name: "Juice Fresh", price: "2,500"}
+                ]
+            },
+            {
+                id: 2,
+                name: "Beauty Corner",
+                category: "Cosmetics & Personal Care",
+                location: "Campus Center",
+                phone: "255765432109",
+                rating: 4.9,
+                images: [
+                    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500",
+                    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500",
+                    "https://images.unsplash.com/photo-1571875257727-256c39da42af?w=500",
+                    "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500"
+                ],
+                products: [
+                    {name: "Pads (Always)", price: "4,500"},
+                    {name: "Perfume (Pocket Size)", price: "8,000"},
+                    {name: "Sabuni Viwembe", price: "500"},
+                    {name: "Body Lotion", price: "6,000"},
+                    {name: "Lip Gloss", price: "3,000"},
+                    {name: "Nail Polish Set", price: "5,000"}
+                ]
+            },
+            {
+                id: 3,
+                name: "Campus Bites",
+                category: "Snacks & Drinks",
+                location: "Library Area",
+                phone: "255787654321",
+                rating: 4.7,
+                images: [
+                    "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=500",
+                    "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=500",
+                    "https://images.unsplash.com/photo-1613919113640-25732ec1eeb7?w=500",
+                    "https://images.unsplash.com/photo-1581006559451-5abf9c5d8c2f?w=500"
+                ],
+                products: [
+                    {name: "Pipi Spicy", price: "500"},
+                    {name: "Biscuits Vileja", price: "1,000"},
+                    {name: "Ubuyu Pack", price: "1,500"},
+                    {name: "Juice (Fresh)", price: "2,500"},
+                    {name: "Popcorn", price: "1,000"},
+                    {name: "Energy Drink", price: "3,000"}
+                ]
+            },
+            {
+                id: 4,
+                name: "Tech Hub Accessories",
+                category: "Electronics & Accessories",
+                location: "IT Block",
+                phone: "255754321098",
+                rating: 4.6,
+                images: [
+                    "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500",
+                    "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500",
+                    "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500",
+                    "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500"
+                ],
+                products: [
+                    {name: "Phone Charger", price: "10,000"},
+                    {name: "Earphones", price: "8,000"},
+                    {name: "Power Bank", price: "25,000"},
+                    {name: "USB Cable", price: "5,000"},
+                    {name: "Phone Case", price: "7,000"}
+                ]
+            }
+        ];
+
+        // Slideshow Management
+        const slideshows = {};
+
+        function initSlideshow(vendorId) {
+            if (!slideshows[vendorId]) {
+                slideshows[vendorId] = {
+                    currentSlide: 0,
+                    autoPlay: null
+                };
+            }
+            showSlide(vendorId, 0);
+            startAutoPlay(vendorId);
+        }
+
+        function showSlide(vendorId, index) {
+            const slides = document.querySelectorAll(`#slideshow-${vendorId} .slide`);
+            const dots = document.querySelectorAll(`#slideshow-${vendorId} .dot`);
+            
+            if (!slides.length) return;
+            
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            
+            if (index >= slides.length) index = 0;
+            if (index < 0) index = slides.length - 1;
+            
+            slideshows[vendorId].currentSlide = index;
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        }
+
+        function changeSlide(vendorId, direction) {
+            stopAutoPlay(vendorId);
+            const newIndex = slideshows[vendorId].currentSlide + direction;
+            showSlide(vendorId, newIndex);
+            startAutoPlay(vendorId);
+        }
+
+        function goToSlide(vendorId, index) {
+            stopAutoPlay(vendorId);
+            showSlide(vendorId, index);
+            startAutoPlay(vendorId);
+        }
+
+        function startAutoPlay(vendorId) {
+            stopAutoPlay(vendorId);
+            slideshows[vendorId].autoPlay = setInterval(() => {
+                const newIndex = slideshows[vendorId].currentSlide + 1;
+                showSlide(vendorId, newIndex);
+            }, 4000);
+        }
+
+        function stopAutoPlay(vendorId) {
+            if (slideshows[vendorId] && slideshows[vendorId].autoPlay) {
+                clearInterval(slideshows[vendorId].autoPlay);
+            }
+        }
+
+        // Page Templates
+        const pages = {
+            home: () => {
+                return `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>${vendors.length}</h3>
+                            <p><i class="fas fa-store me-2"></i>Wauzaji Waliojiunga</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>50+</h3>
+                            <p><i class="fas fa-box me-2"></i>Bidhaa Zinazopatikana</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>4.8★</h3>
+                            <p><i class="fas fa-star me-2"></i>Wastani wa Rating</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>24/7</h3>
+                            <p><i class="fas fa-clock me-2"></i>Huduma Available</p>
+                        </div>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, var(--secondary), var(--primary-dark)); color: white; padding: 3rem; border-radius: 20px; margin-bottom: 2rem; text-align: center;">
+                        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Karibu OrderEase</h1>
+                        <p style="font-size: 1.2rem; opacity: 0.9;">Nunua chochote ulichohitaji - Chakula, Snacks, Cosmetics na zaidi!</p>
+                        <p style="margin-top: 1rem;"><strong>Abdulrahman Al-Sumait University</strong></p>
+                        <button class="btn btn-primary" style="margin-top: 1.5rem; padding: 1rem 2rem;" onclick="showPage('vendors')">
+                            <i class="fas fa-shopping-cart"></i> Anza Kununua
+                        </button>
+                    </div>
+
+                    <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">🔥 Wauzaji Maarufu</h2>
+                    <div class="card-grid" id="vendorsGrid"></div>
+                `;
+            },
+
+            vendors: () => {
+                return `
+                    <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">
+                        <i class="fas fa-store me-2"></i>Wauzaji Wote
+                    </h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Chagua muuzaji na angalia bei zao kamili
+                    </p>
+                    <div class="card-grid" id="vendorsGrid"></div>
+                `;
+            },
+
+            categories: () => {
+                const categories = [
+                    {name: "Vioksi & Chakula", icon: "fa-utensils", count: 15, color: "#EF4444"},
+                    {name: "Cosmetics & Beauty", icon: "fa-spray-can", count: 8, color: "#EC4899"},
+                    {name: "Snacks & Drinks", icon: "fa-cookie-bite", count: 12, color: "#F59E0B"},
+                    {name: "Stationery", icon: "fa-pen", count: 6, color: "#3B82F6"},
+                    {name: "Transport", icon: "fa-motorcycle", count: 10, color: "#8B5CF6"},
+                    {name: "Electronics", icon: "fa-mobile-alt", count: 5, color: "#10B981"}
+                ];
+
+                return `
+                    <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">
+                        <i class="fas fa-th-large me-2"></i>Categories za Bidhaa
+                    </h2>
+                    <div class="card-grid">
+                        ${categories.map(cat => `
+                            <div style="background: var(--card-bg); padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent;" 
+                                 onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='${cat.color}'"
+                                 onmouseout="this.style.transform=''; this.style.borderColor='transparent'">
+                                <div style="font-size: 4rem; color: ${cat.color}; margin-bottom: 1rem;">
+                                    <i class="fas ${cat.icon}"></i>
+                                </div>
+                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${cat.name}</h3>
+                                <p style="color: var(--text-secondary);">${cat.count} Wauzaji</p>
+                                <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="showPage('vendors')">
+                                    Angalia <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            },
+
+            register: () => {
+                return `
+                    <div class="form-container">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div class="logo-icon" style="margin: 0 auto 1rem;">OE</div>
+                            <h2 style="margin-bottom: 0.5rem;">Jiandikishe Kuwa Muuzaji</h2>
+                            <p style="color: var(--text-secondary);">Anza kuuza bidhaa zako kwa wanafunzi!</p>
+                        </div>
+
+                        <form id="vendorForm" onsubmit="submitVendorForm(event)">
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-user me-2"></i>Jina Kamili *</label>
+                                <input type="text" class="form-control" id="fullName" placeholder="Mfano: John Doe" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-store me-2"></i>Jina la Biashara *</label>
+                                <input type="text" class="form-control" id="businessName" placeholder="Mfano: Mama Halima Snacks" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-phone me-2"></i>Namba ya Simu (WhatsApp) *</label>
+                                <input type="tel" class="form-control" id="phoneNumber" placeholder="255712345678" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-list me-2"></i>Aina ya Biashara *</label>
+                                <select class="form-control" id="businessType" required>
+                                    <option value="">Chagua Aina...</option>
+                                    <option>Vioksi & Chakula</option>
+                                    <option>Cosmetics & Beauty</option>
+                                    <option>Snacks & Drinks</option>
+                                    <option>Stationery</option>
+                                    <option>Transport (Boda/Bajaji)</option>
+                                    <option>Electronics & Accessories</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Mahali (Hostel/Location) *</label>
+                                <input type="text" class="form-control" id="location" placeholder="Mfano: Mlimani Hostel" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label"><i class="fas fa-box me-2"></i>Bidhaa Unazouza (Eleza) *</label>
+                                <textarea class="form-control" rows="5" id="products" placeholder="Mfano: Chips Mayai - 3000/=, Sambusa - 2000/=, Soda - 1500/=..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-whatsapp" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                                <i class="fab fa-whatsapp"></i> Wasilisha kupitia WhatsApp
+                            </button>
+
+                            <p style="text-align: center; color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem;">
+                                <i class="fas fa-info-circle"></i> Maombi yako yatatumwa kwa Admin kupitia WhatsApp
+                            </p>
+                        </form>
+                    </div>
+                `;
+            },
+
+            terms: () => {
+                return `
+                    <div class="form-container" style="max-width: 900px;">
+                        <h1 style="text-align: center; margin-bottom: 2rem;">
+                            <i class="fas fa-file-contract me-2" style="color: var(--primary);"></i>
+                            Terms of Service
+                        </h1>
+
+                        <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1)); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+                            <h4 style="margin-bottom: 1rem;"><i class="fas fa-info-circle me-2"></i>Kuhusu Hati Hii</h4>
+                            <p style="margin: 0;">Hii ni makubaliano rasmi kati yako na OrderEase platform. Tafadhali soma kwa makini kabla ya kutumia huduma zetu.</p>
+                        </div>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-handshake me-2"></i>1. Kukubali Masharti
+                        </h3>
+                        <p>Kwa kuingia na kutumia OrderEase platform, unakubali kufuata masharti yote yaliyoainishwa hapa. Ikiwa hukubaliani na masharti haya, tafadhali usitumie platform yetu.</p>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-laptop-code me-2"></i>2. Maelezo ya Platform
+                        </h3>
+                        <p>OrderEase ni marketplace ya campus inayounganisha wanafunzi na wauzaji katika Chuo cha Abdulrahman Al-Sumait University. Tunasaidia mawasiliano na mipangilio ya orders lakini hatushiriki moja kwa moja katika miamala kati ya wanunuzi na wauzaji.</p>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-tasks me-2"></i>3. Majukumu ya Watumiaji
+                        </h3>
+                        <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                            <h4 style="color: var(--primary-dark); margin-bottom: 1rem;">Kwa Wanunuzi:</h4>
+                            <ul style="margin-left: 1.5rem;">
+                                <li style="margin-bottom: 0.5rem;">Toa taarifa sahihi za uwasilishaji</li>
+                                <li style="margin-bottom: 0.5rem;">Lipa kama ilivyokubaliana na wauzaji</li>
+                                <li style="margin-bottom: 0.5rem;">Waheshimu wauzaji na wapelekaji</li>
+                                <li style="margin-bottom: 0.5rem;">Ripoti matatizo haraka</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                            <h4 style="color: var(--primary-dark); margin-bottom: 1rem;">Kwa Wauzaji:</h4>
+                            <ul style="margin-left: 1.5rem;">
+                                <li style="margin-bottom: 0.5rem;">Toa taarifa sahihi za bidhaa na bei</li>
+                                <li style="margin-bottom: 0.5rem;">Dumisha ubora wa bidhaa/huduma</li>
+                                <li style="margin-bottom: 0.5rem;">Timiza orders zilizokubaliwa</li>
+                                <li style="margin-bottom: 0.5rem;">Fuata sheria za chuo na nchi</li>
+                            </ul>
+                        </div>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-shield-alt me-2"></i>4. Kikomo cha Dhima
+                        </h3>
+                        <p>OrderEase inafanya kazi kama platform ya muunganisho tu. Hatuwajibiki kwa ubora wa bidhaa, utoaji, au migogoro ya malipo kati ya wanunuzi na wauzaji.</p>
+
+                        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border);">
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Platform Developer</p>
+                            <h3 style="color: var(--primary);">ZEYANA THABIT JUMA</h3>
+                            <p style="color: var(--text-secondary); margin-top: 1rem;">Last Updated: November 5, 2025</p>
+                        </div>
+                    </div>
+                `;
+            },
+
+            privacy: () => {
+                return `
+                    <div class="form-container" style="max-width: 900px;">
+                        <h1 style="text-align: center; margin-bottom: 2rem;">
+                            <i class="fas fa-shield-alt me-2" style="color: var(--primary);"></i>
+                            Privacy Policy
+                        </h1>
+
+                        <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1)); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+                            <h4 style="margin-bottom: 1rem;"><i class="fas fa-lock me-2"></i>Ahadi Yetu</h4>
+                            <p style="margin: 0;">Tunazingatia faragha yako na tunafanya kila linalowezekana kulinda taarifa zako binafsi. Hatauzi data yako kwa mtu yeyote.</p>
+                        </div>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-database me-2"></i>1. Taarifa Tunazokusanya
+                        </h3>
+                        <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                            <h4 style="color: var(--primary-dark); margin-bottom: 1rem;">Taarifa Binafsi:</h4>
+                            <ul style="margin-left: 1.5rem;">
+                                <li style="margin-bottom: 0.5rem;">Jina na maelezo ya mawasiliano</li>
+                                <li style="margin-bottom: 0.5rem;">Mahusiano na chuo na eneo</li>
+                                <li style="margin-bottom: 0.5rem;">Taarifa za biashara (kwa wauzaji)</li>
+                            </ul>
+                        </div>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-cogs me-2"></i>2. Jinsi Tunavyotumia Taarifa
+                        </h3>
+                        <p>Tunatumia taarifa zilizokusanywa ili kuwezesha miunganisho kati ya wanunuzi na wauzaji, kuboresha utendaji wa platform, na kuhakikisha usalama.</p>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fab fa-whatsapp me-2"></i>3. Muunganisho wa WhatsApp
+                        </h3>
+                        <p>Orders zinashughulikiwa kupitia WhatsApp. Unapobonyeza "Order via WhatsApp", taarifa zako zinashirikiwa na muuzaji kupitia platform ya WhatsApp.</p>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-user-shield me-2"></i>4. Haki Zako
+                        </h3>
+                        <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                            <h4 style="color: var(--primary-dark); margin-bottom: 1rem;">Una haki ya:</h4>
+                            <ul style="margin-left: 1.5rem;">
+                                <li style="margin-bottom: 0.5rem;">Kufikia taarifa zako binafsi</li>
+                                <li style="margin-bottom: 0.5rem;">Kuomba marekebisho ya data isiyosahihi</li>
+                                <li style="margin-bottom: 0.5rem;">Kuomba ufutaji wa akaunti na data yako</li>
+                            </ul>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border);">
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Platform Developer</p>
+                            <h3 style="color: var(--primary);">ZEYANA THABIT JUMA</h3>
+                            <p style="color: var(--text-secondary); margin-top: 1rem;">Last Updated: November 5, 2025</p>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        // Render Vendor Cards
+        function renderVendors() {
+            const grid = document.getElementById('vendorsGrid');
+            if (!grid) return;
+
+            grid.innerHTML = vendors.map(vendor => `
+                <div class="vendor-card">
+                    <div class="slideshow-container" id="slideshow-${vendor.id}">
+                        ${vendor.images.map((img, idx) => `
+                            <div class="slide ${idx === 0 ? 'active' : ''}">
+                                <img src="${img}" alt="${vendor.name}" 
+                                     onerror="this.src='https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=500'" 
+                                     loading="lazy">
+                            </div>
+                        `).join('')}
+                        <button class="slide-nav prev" onclick="changeSlide(${vendor.id}, -1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="slide-nav next" onclick="changeSlide(${vendor.id}, 1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="slide-dots">
+                            ${vendor.images.map((_, idx) => `
+                                <span class="dot ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${vendor.id}, ${idx})"></span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card-content">
+                        <div class="vendor-header">
+                            <h3 class="vendor-title">${vendor.name}</h3>
+                            <span class="badge">${vendor.category}</span>
+                        </div>
+                        
+                        <div class="vendor-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${vendor.location}</span>
+                            <span><i class="fas fa-star"></i> ${vendor.rating}</span>
+                        </div>
+                        
+                        <div class="products-preview">
+                            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                <i class="fas fa-box me-2"></i>Sampuli za Bidhaa:
+                            </h4>
+                            ${vendor.products.slice(0, 3).map(product => `
+                                <div class="product-item">
+                                    <span>${product.name}</span>
+                                    <span class="price">TSh ${product.price}</span>
+                                </div>
+                            `).join('')}
+                            ${vendor.products.length > 3 ? `
+                                <p style="text-align: center; color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.9rem;">
+                                    +${vendor.products.length - 3} bidhaa zaidi
+                                </p>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="card-actions">
+                            <button class="btn btn-secondary" onclick="showVendorDetails(${vendor.id})">
+                                <i class="fas fa-info-circle"></i> Bei Zote
+                            </button>
+                            <button class="btn btn-whatsapp" onclick="orderWhatsApp('${vendor.phone}', '${vendor.name}')">
+                                <i class="fab fa-whatsapp"></i> Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Initialize all slideshows
+            vendors.forEach(vendor => initSlideshow(vendor.id));
+        }
+
+        // Show Vendor Details Modal
+        function showVendorDetails(vendorId) {
+            const vendor = vendors.find(v => v.id === vendorId);
+            if (!vendor) return;
+
+            document.getElementById('modalTitle').textContent = vendor.name;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span class="badge">${vendor.category}</span>
+                        <span style="color: var(--text-secondary);">
+                            <i class="fas fa-star" style="color: var(--primary);"></i> ${vendor.rating}
+                        </span>
+                    </div>
+                    <p style="color: var(--text-secondary);">
+                        <i class="fas fa-map-marker-alt me-2"></i>${vendor.location}
+                    </p>
+                </div>
+
+                <h3 style="margin-bottom: 1rem;">
+                    <i class="fas fa-list-ul me-2" style="color: var(--primary);"></i>
+                    Bei Kamili za Bidhaa
+                </h3>
+                
+                <div class="price-list">
+                    ${vendor.products.map(product => `
+                        <div class="price-item">
+                            <span style="font-weight: 500;">${product.name}</span>
+                            <span class="price" style="font-size: 1.2rem;">TSh ${product.price}</span>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-whatsapp" style="flex: 1;" onclick="orderWhatsApp('${vendor.phone}', '${vendor.name}')">
+                        <i class="fab fa-whatsapp"></i> Order Sasa
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeModal()">
+                        <i class="fas fa-times"></i> Funga
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('detailsModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('detailsModal').classList.remove('active');
+        }
+
+        // WhatsApp Order
+        function orderWhatsApp(phone, vendorName) {
+            const message = `Habari! Ninataka kuweka order kutoka *${vendorName}* kupitia OrderEase Platform.`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // Submit Vendor Form
+        function submitVendorForm(e) {
+            e.preventDefault();
+            
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                businessName: document.getElementById('businessName').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                businessType: document.getElementById('businessType').value,
+                location: document.getElementById('location').value,
+                products: document.getElementById('products').value
+            };
+
+            const message = `🆕 *MUUZAJI MPYA - OrderEase Registration*
+
+📋 *TAARIFA ZA MUUZAJI:*
+
+👤 *Jina Kamili:* ${formData.fullName}
+🏪 *Jina la Biashara:* ${formData.businessName}
+📱 *Namba ya Simu:* ${formData.phoneNumber}
+📂 *Aina ya Biashara:* ${formData.businessType}
+📍 *Mahali:* ${formData.location}
+
+📦 *BIDHAA ANAZOUZA:*
+${formData.products}
+
+━━━━━━━━━━━━━━━━━
+✅ Maombi yamepokewa kupitia OrderEase Platform
+🏛️ Abdulrahman Al-Sumait University
+💻 Developer: ZEYANA THABIT JUMA`;
+
+            const adminWhatsApp = '255624945919';
+            window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
+            
+            alert('✅ Hongera! Maombi yako yanaenda kwa OrderEase Admin kupitia WhatsApp. Tutakuwasiliana nawe hivi karibuni!');
+            document.getElementById('vendorForm').reset();
+        }
+
+        // Search Function
+        function searchVendors() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.vendor-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // Show Page
+        function showPage(pageName) {
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Find and activate the correct nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const href = link.getAttribute('onclick');
+                if (href && href.includes(`'${pageName}'`)) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update page title
+            const titles = {
+                home: 'Dashboard',
+                vendors: 'Wauzaji',
+                categories: 'Categories',
+                register: 'Jiandikishe',
+                terms: 'Terms of Service',
+                privacy: 'Privacy Policy'
+            };
+            document.getElementById('pageTitle').textContent = titles[pageName] || 'OrderEase';
+
+            // Render page content
+            document.getElementById('contentArea').innerHTML = pages[pageName]();
+
+            // Render vendors if needed
+            if (pageName === 'home' || pageName === 'vendors') {
+                setTimeout(renderVendors, 50);
+            }
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
+            }
+
+            // Scroll to top
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Close modal on outside click
+        document.getElementById('detailsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
