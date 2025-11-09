@@ -527,6 +527,7 @@
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
+            animation: slideUp 0.3s;
         }
         
         .modal-header {
@@ -555,76 +556,31 @@
             padding: 2rem;
         }
         
-        /* URL Input Area */
-        .url-input-area {
-            background: var(--content-bg);
-            border: 2px solid var(--border);
+        /* Image Upload */
+        .upload-area {
+            border: 3px dashed var(--border);
             border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .url-input-area h4 {
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .url-input-area h4 i {
-            color: var(--primary);
-        }
-        
-        .url-input-group {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .url-input-group input {
-            flex: 1;
-        }
-        
-        .hosting-suggestions {
-            background: rgba(34, 197, 94, 0.05);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .hosting-suggestions h5 {
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .hosting-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        
-        .hosting-links a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.5rem 1rem;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
             transition: all 0.3s;
+            background: var(--content-bg);
         }
         
-        .hosting-links a:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(34, 197, 94, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
         }
         
         .image-preview {
@@ -638,7 +594,6 @@
             position: relative;
             border-radius: 8px;
             overflow: hidden;
-            border: 2px solid var(--border);
         }
         
         .preview-item img {
@@ -661,24 +616,33 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
-        .preview-remove:hover {
-            transform: scale(1.1);
+        .upload-progress {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--content-bg);
+            border-radius: 8px;
+            display: none;
         }
         
-        .image-loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+        .upload-progress.show {
+            display: block;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
         }
         
         /* Loading Spinner */
@@ -741,14 +705,6 @@
             .menu-toggle {
                 display: block;
             }
-            
-            .url-input-group {
-                flex-direction: column;
-            }
-            
-            .hosting-links {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
@@ -772,6 +728,7 @@
                     </label>
                     <input type="text" class="form-control" id="loginEmail" placeholder="email@example.com au 255712345678" required>
                 </div>
+                
                 <div class="form-group">
                     <label class="form-label">
                         <i class="fas fa-lock"></i> Password
@@ -887,13 +844,13 @@
                         <div class="card-header">
                             <h3 class="card-title">Karibu Dashboard Yako!</h3>
                         </div>
-                        <p>Simamia biashara yako hapa. Ongeza bidhaa, ongeza picha, na edit taarifa zako.</p>
+                        <p>Simamia biashara yako hapa. Ongeza bidhaa, upload picha, na edit taarifa zako.</p>
                         <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
                             <button class="btn btn-primary" onclick="showSection('add-product')">
                                 <i class="fas fa-plus"></i> Ongeza Bidhaa
                             </button>
                             <button class="btn btn-success" onclick="showSection('images')">
-                                <i class="fas fa-images"></i> Ongeza Picha
+                                <i class="fas fa-upload"></i> Upload Picha
                             </button>
                         </div>
                     </div>
@@ -958,47 +915,18 @@
                         <div class="card-header">
                             <h3 class="card-title">Picha za Biashara Yako</h3>
                         </div>
-                        
-                        <div class="url-input-area">
-                            <h4><i class="fas fa-link"></i> Ongeza Picha kwa URL</h4>
-                            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
-                                Upload picha yako kwenye image hosting service, kisha weka URL hapa chini
-                            </p>
-                            
-                            <div class="url-input-group">
-                                <input 
-                                    type="url" 
-                                    class="form-control" 
-                                    id="imageUrlInput" 
-                                    placeholder="https://i.imgur.com/example.jpg"
-                                >
-                                <button class="btn btn-primary" onclick="addImageFromUrl()">
-                                    <i class="fas fa-plus"></i> Ongeza Picha
-                                </button>
-                            </div>
-                            
-                            <div class="hosting-suggestions">
-                                <h5><i class="fas fa-info-circle"></i> Pendekeza Image Hosting Services (Free):</h5>
-                                <div class="hosting-links">
-                                    <a href="https://imgur.com" target="_blank">
-                                        <i class="fas fa-external-link-alt"></i> Imgur.com
-                                    </a>
-                                    <a href="https://postimages.org" target="_blank">
-                                        <i class="fas fa-external-link-alt"></i> Postimages.org
-                                    </a>
-                                    <a href="https://imgbb.com" target="_blank">
-                                        <i class="fas fa-external-link-alt"></i> ImgBB.com
-                                    </a>
-                                    <a href="https://cloudinary.com" target="_blank">
-                                        <i class="fas fa-external-link-alt"></i> Cloudinary.com
-                                    </a>
-                                </div>
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>Click au Drag Picha Hapa</h3>
+                            <p>PNG, JPG up to 5MB</p>
+                            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                        </div>
+                        <div class="upload-progress" id="uploadProgress">
+                            <p><i class="fas fa-spinner fa-spin"></i> Inapakia picha...</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                             </div>
                         </div>
-                        
-                        <div class="alert alert-error" id="imageError" style="margin-bottom: 1rem;"></div>
-                        <div class="alert alert-success" id="imageSuccess" style="margin-bottom: 1rem;"></div>
-                        
                         <div class="image-preview" id="imagePreview"></div>
                     </div>
                 </div>
@@ -1141,85 +1069,48 @@
             const password = document.getElementById('loginPassword').value;
             const loginBtn = document.getElementById('loginBtn');
             
-            // Validation
-            if (!email) {
-                showAlert('loginError', '❌ Weka Email au Phone number!');
-                return;
-            }
-            
-            if (!password) {
-                showAlert('loginError', '❌ Weka Password!');
-                return;
-            }
-            
-            if (password.length < 4) {
-                showAlert('loginError', '❌ Password fupi sana!');
-                return;
-            }
-            
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inaingia...';
             
             try {
-                // Query using email or phone
-                let query = supabase
+                const { data: vendors, error } = await supabase
                     .from('vendors')
-                    .select('*');
+                    .select('*')
+                    .or(`email.eq.${email},phone.eq.${email}`)
+                    .single();
                 
-                // Check if input is email or phone
-                if (email.includes('@')) {
-                    query = query.eq('email', email);
+                if (error || !vendors) {
+                    showAlert('loginError', 'Email/Phone au Password si sahihi!');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingia Dashboard';
+                    return;
+                }
+                
+                if (vendors.password === password) {
+                    if (vendors.status !== 'approved') {
+                        showAlert('loginError', 'Account yako bado haijaidhinishwa. Subiri approval!');
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingia Dashboard';
+                        return;
+                    }
+                    
+                    localStorage.setItem('orderease_vendor', JSON.stringify(vendors));
+                    currentUser = vendors;
+                    
+                    showAlert('loginSuccess', 'Login imefanikiwa! Inafungua dashboard...');
+                    
+                    setTimeout(() => {
+                        showDashboard();
+                        loadVendorData();
+                    }, 1000);
                 } else {
-                    query = query.eq('phone', email);
-                }
-                
-                const { data: vendors, error } = await query.maybeSingle();
-                
-                if (error) {
-                    console.error('Query error:', error);
-                    showAlert('loginError', '❌ Kuna tatizo! Jaribu tena.');
+                    showAlert('loginError', 'Password si sahihi!');
                     loginBtn.disabled = false;
                     loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingia Dashboard';
-                    return;
                 }
-                
-                if (!vendors) {
-                    showAlert('loginError', '❌ Email/Phone haipo kwenye system! Jisajili kwanza.');
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingia Dashboard';
-                    return;
-                }
-                
-                // Check password
-                if (vendors.password !== password) {
-                    showAlert('loginError', '❌ Password si sahihi!');
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingia Dashboard';
-                    return;
-                }
-                
-                // Check approval status
-                if (vendors.status !== 'approved') {
-                    showAlert('loginError', '⏳ Account yako bado haijaidhinishwa. Subiri admin akuidhinishe!');
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingia Dashboard';
-                    return;
-                }
-                
-                // Success!
-                localStorage.setItem('orderease_vendor', JSON.stringify(vendors));
-                currentUser = vendors;
-                
-                showAlert('loginSuccess', '✅ Umeingia successfully! Inafungua dashboard...');
-                
-                setTimeout(() => {
-                    showDashboard();
-                    loadVendorData();
-                }, 1500);
-                
             } catch (error) {
                 console.error('Login error:', error);
-                showAlert('loginError', '❌ Kuna tatizo! Jaribu tena baadaye.');
+                showAlert('loginError', 'Kuna tatizo! Jaribu tena.');
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingia Dashboard';
             }
@@ -1468,111 +1359,18 @@
             }
         }
 
-        // Validate Image URL
-        function isValidImageUrl(url) {
-            try {
-                const urlObj = new URL(url);
-                const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
-                const pathname = urlObj.pathname.toLowerCase();
-                
-                const hasValidExtension = validExtensions.some(ext => pathname.endsWith(ext));
-                const isImageHost = ['imgur.com', 'imgbb.com', 'postimages.org', 'cloudinary.com', 'i.imgur.com'].some(host => urlObj.hostname.includes(host));
-                
-                return hasValidExtension || isImageHost;
-            } catch {
-                return false;
-            }
-        }
-
-        // Check if image loads
-        function checkImageExists(url) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-            });
-        }
-
-        // Add Image from URL
-        async function addImageFromUrl() {
-            const urlInput = document.getElementById('imageUrlInput');
-            const imageUrl = urlInput.value.trim();
-            
-            document.getElementById('imageError').classList.remove('show');
-            document.getElementById('imageSuccess').classList.remove('show');
-            
-            if (!imageUrl) {
-                showAlert('imageError', '❌ Tafadhali weka URL ya picha!');
-                return;
-            }
-            
-            if (!isValidImageUrl(imageUrl)) {
-                showAlert('imageError', '❌ URL si sahihi! Weka link ya picha (jpg, png, gif, etc)');
-                return;
-            }
-            
-            const btn = event.target;
-            const originalHtml = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inakagua...';
-            
-            try {
-                const imageExists = await checkImageExists(imageUrl);
-                
-                if (!imageExists) {
-                    showAlert('imageError', '❌ Picha haipatikani! Hakikisha URL ni sahihi na picha ipo online.');
-                    btn.disabled = false;
-                    btn.innerHTML = originalHtml;
-                    return;
-                }
-                
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inahifadhi...';
-                
-                const { data, error } = await supabase
-                    .from('images')
-                    .insert([{
-                        vendor_id: currentUser.id,
-                        image_url: imageUrl
-                    }]);
-                
-                if (error) throw error;
-                
-                showAlert('imageSuccess', '✅ Picha imeongezwa successfully!');
-                urlInput.value = '';
-                btn.disabled = false;
-                btn.innerHTML = originalHtml;
-                
-                await loadImages();
-                await loadStats();
-                
-            } catch (error) {
-                console.error('Error adding image:', error);
-                showAlert('imageError', '❌ Kuna tatizo kuhifadhi picha! Jaribu tena.');
-                btn.disabled = false;
-                btn.innerHTML = originalHtml;
-            }
-        }
-
         // Load Images
         async function loadImages() {
             try {
                 const { data: images, error } = await supabase
                     .from('images')
                     .select('*')
-                    .eq('vendor_id', currentUser.id)
-                    .order('created_at', { ascending: false });
+                    .eq('vendor_id', currentUser.id);
                 
                 const container = document.getElementById('imagePreview');
                 
                 if (!images || images.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-images"></i>
-                            <h3>Hakuna Picha</h3>
-                            <p>Ongeza picha ya kwanza ya biashara yako!</p>
-                        </div>
-                    `;
+                    container.innerHTML = '';
                     return;
                 }
                 
@@ -1580,7 +1378,7 @@
                 images.forEach(img => {
                     html += `
                         <div class="preview-item">
-                            <img src="${img.image_url}" alt="Business Image" onerror="this.src='https://via.placeholder.com/150?text=Error'">
+                            <img src="${img.image_url}" alt="Product">
                             <button class="preview-remove" onclick="deleteImage('${img.id}')">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -1593,6 +1391,65 @@
                 console.error('Error loading images:', error);
             }
         }
+
+        // Image Upload
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const files = e.target.files;
+            if (!files.length) return;
+            
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Picha ni kubwa sana! Max 5MB');
+                    continue;
+                }
+                
+                try {
+                    progressDiv.classList.add('show');
+                    progressFill.style.width = '30%';
+                    
+                    const fileName = `${currentUser.id}/${Date.now()}_${file.name}`;
+                    const { data, error } = await supabase.storage
+                        .from('vendor-images')
+                        .upload(fileName, file);
+                    
+                    if (error) throw error;
+                    
+                    progressFill.style.width = '60%';
+                    
+                    const { data: urlData } = supabase.storage
+                        .from('vendor-images')
+                        .getPublicUrl(fileName);
+                    
+                    await supabase
+                        .from('images')
+                        .insert([{
+                            vendor_id: currentUser.id,
+                            image_url: urlData.publicUrl
+                        }]);
+                    
+                    progressFill.style.width = '100%';
+                    
+                    setTimeout(() => {
+                        progressDiv.classList.remove('show');
+                        progressFill.style.width = '0%';
+                    }, 1000);
+                    
+                    await loadImages();
+                    await loadStats();
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    alert('❌ Kuna tatizo kupakia picha!');
+                    progressDiv.classList.remove('show');
+                }
+            }
+            
+            document.getElementById('fileInput').value = '';
+        });
 
         // Delete Image
         async function deleteImage(imageId) {
@@ -1718,7 +1575,7 @@
             document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
         }
 
-         // Close Modal
+        // Close Modal
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
@@ -1728,12 +1585,35 @@
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Allow Enter key to add image
-        document.getElementById('imageUrlInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addImageFromUrl();
-            }
+        // Drag and Drop
+        const uploadArea = document.getElementById('uploadArea');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            });
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            document.getElementById('fileInput').files = files;
+            document.getElementById('fileInput').dispatchEvent(new Event('change'));
         });
 
         // Initialize
@@ -1755,5 +1635,3 @@
     </script>
 </body>
 </html>
-                
-               
