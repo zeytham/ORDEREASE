@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrderEase - Super Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --primary: #22C55E;
+            --primary-dark: #16A34A;
+            --secondary: #0F172A;
+            --sidebar-bg: #1E293B;
+            --content-bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
+            --border: #E2E8F0;
+            --shadow: rgba(0,0,0,0.1);
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --success: #10B981;
+            --info: #3B82F6;
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--content-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--secondary), var(--primary-dark));
+            padding: 2rem;
+        }
+        
+        .login-box {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 800;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+        }
+        
+        .login-logo h2 {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-logo p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .alert.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 2px solid #FCA5A5;
+        }
+        
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 2px solid #6EE7B7;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+        
+        .dashboard.active {
+            display: flex;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            padding: 2rem 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 4px 0 20px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .logo-section {
+            padding: 0 1.5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo-section .logo-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+        }
+        
+        .logo-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .logo-text span {
+            color: var(--primary);
+        }
+        
+        .admin-info {
+            padding: 1rem 1.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            margin: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .admin-info h4 {
+            color: white;
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .admin-info p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+        }
+        
+        .nav-menu {
+            padding: 2rem 0;
+        }
+        
+        .nav-item {
+            margin: 0.5rem 1rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .nav-link i {
+            width: 24px;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .badge-count {
+            background: var(--danger);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-left: auto;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+        
+        .topbar {
+            background: var(--card-bg);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .topbar-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+            padding: 0.75rem 1.5rem;
+        }
+        
+        .btn-logout:hover {
+            background: #DC2626;
+        }
+        
+        .content-area {
+            padding: 2rem;
+        }
+        
+        .page-section {
+            display: none;
+        }
+        
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+        
+        .stat-card.danger::before {
+            background: var(--danger);
+        }
+        
+        .stat-card.warning::before {
+            background: var(--warning);
+        }
+        
+        .stat-card.success::before {
+            background: var(--success);
+        }
+        
+        .stat-card.info::before {
+            background: var(--info);
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card.danger h3 {
+            color: var(--danger);
+        }
+        
+        .stat-card.warning h3 {
+            color: var(--warning);
+        }
+        
+        .stat-card.success h3 {
+            color: var(--success);
+        }
+        
+        .stat-card.info h3 {
+            color: var(--info);
+        }
+        
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .stat-card i {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 3rem;
+            opacity: 0.1;
+        }
+        
+        /* Card */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--content-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        
+        .table tr:hover {
+            background: var(--content-bg);
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .status-approved {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .status-rejected {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 2000;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+        
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .vendor-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .detail-item {
+            padding: 1rem;
+            background: var(--content-bg);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .product-card {
+            padding: 1rem;
+            background: var(--content-bg);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .image-item {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-btns {
+                flex-direction: column;
+            }
+            
+            .btn-sm {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="login-logo">
+                <div class="logo-icon">SA</div>
+                <h2>Super Admin</h2>
+                <p>OrderEase Control Panel</p>
+            </div>
+            
+            <div class="alert alert-error" id="loginError"></div>
+            <div class="alert alert-success" id="loginSuccess"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user-shield"></i> Admin Username
+                    </label>
+                    <input type="text" class="form-control" id="loginUsername" placeholder="admin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                </button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">
+                    <i class="fas fa-shield-alt"></i> Secure Admin Access Only
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboardPage">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">SA</div>
+                <div class="logo-text">Super<span>Admin</span></div>
+            </div>
+            
+            <div class="admin-info">
+                <h4>🛡️ SUPER ADMIN</h4>
+                <p>Full System Access</p>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <div class="nav-link active" onclick="showSection('overview')">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-link" onclick="showSection('pending')">
+                        <i class="fas fa-clock"></i>
+                        <span>Pending Approvals</span>
+                        <span class="badge-count" id="pendingCount">0</span>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-link" onclick="showSection('vendors')">
+                        <i class="fas fa-store"></i>
+                        <span>All Vendors</span>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-link" onclick="showSection('products')">
+                        <i class="fas fa-box"></i>
+                        <span>All Products</span>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="topbar">
+                <h2 id="pageTitle">Dashboard Overview</h2>
+                <div class="topbar-actions">
+                    <button class="btn btn-info" onclick="window.open('index.html', '_blank')">
+                        <i class="fas fa-globe"></i> View Public Site
+                    </button>
+                    <button class="btn btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <!-- Overview Section -->
+                <div class="page-section active" id="section-overview">
+                    <div class="stats-grid">
+                        <div class="stat-card warning">
+                            <i class="fas fa-clock"></i>
+                            <h3 id="statPending">0</h3>
+                            <p>Pending Approvals</p>
+                        </div>
+                        <div class="stat-card success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3 id="statApproved">0</h3>
+                            <p>Approved Vendors</p>
+                        </div>
+                        <div class="stat-card info">
+                            <i class="fas fa-box"></i>
+                            <h3 id="statProducts">0</h3>
+                            <p>Total Products</p>
+                        </div>
+                        <div class="stat-card danger">
+                            <i class="fas fa-times-circle"></i>
+                            <h3 id="statRejected">0</h3>
+                            <p>Rejected</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🎯 Quick Actions</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <button class="btn btn-warning" onclick="showSection('pending')">
+                                <i class="fas fa-user-check"></i> Review Pending
+                            </button>
+                            <button class="btn btn-success" onclick="showSection('vendors')">
+                                <i class="fas fa-store"></i> Manage Vendors
+                            </button>
+                            <button class="btn btn-info" onclick="showSection('products')">
+                                <i class="fas fa-box"></i> View Products
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📊 Recent Activity</h3>
+                        </div>
+                        <div id="recentActivity">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Approvals Section -->
+                <div class="page-section" id="section-pending">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">⏳ Pending Vendor Approvals</h3>
+                        </div>
+                        <div class="table-responsive" id="pendingTableContainer">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Vendors Section -->
+                <div class="page-section" id="section-vendors">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🏪 All Vendors</h3>
+                        </div>
+                        <div class="table-responsive" id="vendorsTableContainer">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Products Section -->
+                <div class="page-section" id="section-products">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📦 All Products</h3>
+                        </div>
+                        <div class="table-responsive" id="productsTableContainer">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Vendor Details Modal -->
+    <div class="modal" id="vendorDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalVendorTitle"></h2>
+                <button class="modal-close" onclick="closeModal('vendorDetailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modalVendorBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://sjmqrkjbwgdoxjqsfklr.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqbXFya2pid2dkb3hqcXNma2xyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyOTQ5MzMsImV4cCI6MjA3Nzg3MDkzM30.q7NjOZlyfZfpHOINBS_fJjccz9tuvcNvxBol6i9DpbQ';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        const ADMIN_USERNAME = 'admin';
+        const ADMIN_PASSWORD = 'admin123';
+        
+        let currentAdmin = null;
+
+        // Check Auth
+        function checkAuth() {
+            const admin = JSON.parse(localStorage.getItem('orderease_superadmin'));
+            if (admin) {
+                currentAdmin = admin;
+                showDashboard();
+                loadAllData();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            
+            setTimeout(() => {
+                if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                    const adminData = { username, loginTime: new Date().toISOString() };
+                    localStorage.setItem('orderease_superadmin', JSON.stringify(adminData));
+                    currentAdmin = adminData;
+                    
+                    showAlert('loginSuccess', 'Login successful! Loading dashboard...');
+                    
+                    setTimeout(() => {
+                        showDashboard();
+                        loadAllData();
+                    }, 1000);
+                } else {
+                    showAlert('loginError', 'Invalid username or password!');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Dashboard';
+                }
+            }, 500);
+        });
+
+        function showAlert(id, message) {
+            const alert = document.getElementById(id);
+            alert.textContent = message;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 5000);
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').classList.add('active');
+        }
+
+        function showLogin() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').classList.remove('active');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('orderease_superadmin');
+                currentAdmin = null;
+                showLogin();
+            }
+        }
+
+        // Load All Data
+        async function loadAllData() {
+            await loadStats();
+            await loadPendingVendors();
+            await loadAllVendors();
+            await loadAllProducts();
+            await loadRecentActivity();
+        }
+
+        // Load Stats
+        async function loadStats() {
+            try {
+                const { data: vendors, error } = await supabase
+                    .from('vendors')
+                    .select('status');
+                
+                if (error) throw error;
+                
+                const pending = vendors.filter(v => v.status === 'pending').length;
+                const approved = vendors.filter(v => v.status === 'approved').length;
+                const rejected = vendors.filter(v => v.status === 'rejected').length;
+                
+                document.getElementById('statPending').textContent = pending;
+                document.getElementById('statApproved').textContent = approved;
+                document.getElementById('statRejected').textContent = rejected;
+                document.getElementById('pendingCount').textContent = pending;
+                
+                const { data: products } = await supabase
+                    .from('products')
+                    .select('id');
+                
+                document.getElementById('statProducts').textContent = products?.length || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load Pending Vendors
+        async function loadPendingVendors() {
+            try {
+                const { data: vendors, error } = await supabase
+                    .from('vendors')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+                
+                const container = document.getElementById('pendingTableContainer');
+                
+                if (!vendors || vendors.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>No Pending Approvals</h3>
+                            <p>All vendor applications have been reviewed!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Owner Name</th>
+                                <th>Business Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Date Applied</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                vendors.forEach(vendor => {
+                    const date = new Date(vendor.created_at).toLocaleDateString();
+                    html += `
+                        <tr>
+                            <td><strong>${vendor.full_name || 'N/A'}</strong></td>
+                            <td>${vendor.business_name}</td>
+                            <td>${vendor.email}</td>
+                            <td>${vendor.phone}</td>
+                            <td>${vendor.category}</td>
+                            <td>${vendor.location}</td>
+                            <td>${date}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn btn-success btn-sm" onclick="approveVendor('${vendor.id}', '${vendor.business_name}', '${vendor.phone}', '${vendor.email}', '${vendor.full_name || ''}')">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="rejectVendor('${vendor.id}', '${vendor.business_name}')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                    <button class="btn btn-info btn-sm" onclick="viewVendorDetails('${vendor.id}')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading pending vendors:', error);
+            }
+        }
+
+        // Approve Vendor
+        async function approveVendor(vendorId, businessName, phone, email, fullName) {
+            if (!confirm(`Approve vendor: ${businessName}?`)) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('vendors')
+                    .update({ status: 'approved' })
+                    .eq('id', vendorId);
+                
+                if (error) throw error;
+                
+                alert('✅ Vendor approved successfully!');
+                await loadAllData();
+                
+                // Send enhanced WhatsApp notification
+                const message = `🎉 *HONGERA ${fullName || businessName}!*
+
+✅ Account yako ya *${businessName}* imeidhinishwa kwenye OrderEase Platform!
+
+━━━━━━━━━━━━━━━━━
+📱 *INGIA DASHBOARD YAKO SASA:*
+
+🔗 Link: [Your Website]/admin.html
+
+📧 *Login Credentials:*
+- Email: ${email}
+- Password: [Password uliyochagua wakati wa kujisajili]
+
+━━━━━━━━━━━━━━━━━
+✨ *UNAWEZA KUFANYA:*
+✓ Ongeza bidhaa zako
+✓ Upload picha za biashara
+✓ Edit bei na maelezo
+✓ Simamia orders
+✓ Update profile yako
+
+━━━━━━━━━━━━━━━━━
+📍 *Mahali pa Kujiunga:*
+Nenda: admin.html
+Tumia email na password yako kuingia
+
+🚀 *Karibu OrderEase Family!*
+Tunasubiri bidhaa zako!
+
+━━━━━━━━━━━━━━━━━
+🏛️ Abdulrahman Al-Sumait University
+💻 Developer: ZEYANA THABIT JUMA`;
+                
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+            } catch (error) {
+                console.error('Error approving vendor:', error);
+                alert('❌ Error approving vendor!');
+            }
+        }
+
+        // Reject Vendor
+        async function rejectVendor(vendorId, businessName) {
+            const reason = prompt(`Reject vendor: ${businessName}?\n\nEnter reason (optional):`);
+            if (reason === null) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('vendors')
+                    .update({ status: 'rejected' })
+                    .eq('id', vendorId);
+                
+                if (error) throw error;
+                
+                alert('❌ Vendor rejected!');
+                await loadAllData();
+            } catch (error) {
+                console.error('Error rejecting vendor:', error);
+                alert('❌ Error rejecting vendor!');
+            }
+        }
+
+        // View Vendor Details
+        async function viewVendorDetails(vendorId) {
+            try {
+                const { data: vendor, error } = await supabase
+                    .from('vendors')
+                    .select('*')
+                    .eq('id', vendorId)
+                    .single();
+                
+                if (error) throw error;
+                
+                const { data: products } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('vendor_id', vendorId);
+                
+                const { data: images } = await supabase
+                    .from('images')
+                    .select('*')
+                    .eq('vendor_id', vendorId);
+                
+                document.getElementById('modalVendorTitle').textContent = vendor.business_name;
+                
+                const statusClass = vendor.status === 'approved' ? 'status-approved' : 
+                                   vendor.status === 'rejected' ? 'status-rejected' : 'status-pending';
+                
+                let html = `
+                    <div class="vendor-detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Owner Name</div>
+                            <div class="detail-value">${vendor.full_name || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Business Name</div>
+                            <div class="detail-value">${vendor.business_name}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value">${vendor.email}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value">${vendor.phone}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Category</div>
+                            <div class="detail-value">${vendor.category}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Location</div>
+                            <div class="detail-value">${vendor.location}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Rating</div>
+                            <div class="detail-value">${vendor.rating || '0.0'} ⭐</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value"><span class="status-badge ${statusClass}">${vendor.status.toUpperCase()}</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Joined Date</div>
+                            <div class="detail-value">${new Date(vendor.created_at).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">
+                        <i class="fas fa-box" style="color: var(--primary);"></i> Products (${products?.length || 0})
+                    </h3>
+                    ${products && products.length > 0 ? `
+                        <div class="products-grid">
+                            ${products.map(p => `
+                                <div class="product-card">
+                                    <strong>${p.name}</strong>
+                                    <p style="color: var(--primary); font-weight: 700; margin-top: 0.5rem;">TSh ${p.price.toLocaleString()}</p>
+                                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">${p.category || 'N/A'}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No products added yet</p>'}
+                    
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">
+                        <i class="fas fa-images" style="color: var(--primary);"></i> Gallery Images (${images?.length || 0})
+                    </h3>
+                    ${images && images.length > 0 ? `
+                        <div class="images-grid">
+                            ${images.map(img => `
+                                <div class="image-item">
+                                    <img src="${img.image_url}" alt="Vendor image">
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No images uploaded yet</p>'}
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        ${vendor.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="approveVendor('${vendor.id}', '${vendor.business_name}', '${vendor.phone}', '${vendor.email}', '${vendor.full_name || ''}'); closeModal('vendorDetailsModal');">
+                                <i class="fas fa-check"></i> Approve Vendor
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-danger" onclick="deleteVendor('${vendor.id}', '${vendor.business_name}'); closeModal('vendorDetailsModal');">
+                            <i class="fas fa-trash"></i> Delete Vendor
+                        </button>
+                        <button class="btn btn-info" onclick="closeModal('vendorDetailsModal')">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('modalVendorBody').innerHTML = html;
+                document.getElementById('vendorDetailsModal').classList.add('active');
+            } catch (error) {
+                console.error('Error loading vendor details:', error);
+                alert('❌ Error loading vendor details!');
+            }
+        }
+
+        // Load All Vendors
+        async function loadAllVendors() {
+            try {
+                const { data: vendors, error } = await supabase
+                    .from('vendors')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                const container = document.getElementById('vendorsTableContainer');
+                
+                if (!vendors || vendors.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-store-slash"></i>
+                            <h3>No Vendors Yet</h3>
+                            <p>No vendors have registered on the platform.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Owner Name</th>
+                                <th>Business Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Products</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                for (let vendor of vendors) {
+                    const { data: products } = await supabase
+                        .from('products')
+                        .select('id')
+                        .eq('vendor_id', vendor.id);
+                    
+                    const statusClass = vendor.status === 'approved' ? 'status-approved' : 
+                                       vendor.status === 'rejected' ? 'status-rejected' : 'status-pending';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${vendor.full_name || 'N/A'}</strong></td>
+                            <td>${vendor.business_name}</td>
+                            <td>${vendor.email}</td>
+                            <td>${vendor.phone}</td>
+                            <td>${vendor.category}</td>
+                            <td>${vendor.location}</td>
+                            <td><span class="status-badge ${statusClass}">${vendor.status.toUpperCase()}</span></td>
+                            <td>${products?.length || 0}</td>
+                            <td>
+                                <div class="action-btns">
+                                    ${vendor.status === 'pending' ? `
+                                        <button class="btn btn-success btn-sm" onclick="approveVendor('${vendor.id}', '${vendor.business_name}', '${vendor.phone}', '${vendor.email}', '${vendor.full_name || ''}')">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-info btn-sm" onclick="viewVendorDetails('${vendor.id}')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteVendor('${vendor.id}', '${vendor.business_name}')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading vendors:', error);
+            }
+        }
+
+        // Delete Vendor
+        async function deleteVendor(vendorId, businessName) {
+            if (!confirm(`⚠️ DELETE vendor: ${businessName}?\n\nThis will also delete all their products and images. This action cannot be undone!`)) return;
+            
+            try {
+                await supabase.from('products').delete().eq('vendor_id', vendorId);
+                await supabase.from('images').delete().eq('vendor_id', vendorId);
+                
+                const { error } = await supabase
+                    .from('vendors')
+                    .delete()
+                    .eq('id', vendorId);
+                
+                if (error) throw error;
+                
+                alert('✅ Vendor and all related data deleted!');
+                await loadAllData();
+            } catch (error) {
+                console.error('Error deleting vendor:', error);
+                alert('❌ Error deleting vendor!');
+            }
+        }
+
+        // Load All Products
+        async function loadAllProducts() {
+            try {
+                const { data: products, error } = await supabase
+                    .from('products')
+                    .select(`
+                        *,
+                        vendors (business_name, phone, full_name)
+                    `)
+                    .order('created_at', { ascending: false });
+                
+                const container = document.getElementById('productsTableContainer');
+                
+                if (!products || products.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <h3>No Products Yet</h3>
+                            <p>No products have been added to the platform.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Vendor Owner</th>
+                                <th>Business Name</th>
+                                <th>Price (TSh)</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Added Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                products.forEach(product => {
+                    const date = new Date(product.created_at).toLocaleDateString();
+                    const ownerName = product.vendors?.full_name || 'N/A';
+                    const businessName = product.vendors?.business_name || 'Unknown';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${product.name}</strong></td>
+                            <td>${ownerName}</td>
+                            <td>${businessName}</td>
+                            <td style="color: var(--primary); font-weight: 700;">${product.price.toLocaleString()}</td>
+                            <td>${product.category || 'N/A'}</td>
+                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${product.description || '-'}</td>
+                            <td>${date}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="deleteProduct('${product.id}', '${product.name}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading products:', error);
+            }
+        }
+
+        // Delete Product
+        async function deleteProduct(productId, productName) {
+            if (!confirm(`Delete product: ${productName}?`)) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('products')
+                    .delete()
+                    .eq('id', productId);
+                
+                if (error) throw error;
+                
+                alert('✅ Product deleted!');
+                await loadAllProducts();
+                await loadStats();
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                alert('❌ Error deleting product!');
+            }
+        }
+
+        // Load Recent Activity
+        async function loadRecentActivity() {
+            try {
+                const { data: vendors, error } = await supabase
+                    .from('vendors')
+                    .select('business_name, full_name, status, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+                
+                const container = document.getElementById('recentActivity');
+                
+                if (!vendors || vendors.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No recent activity</p>';
+                    return;
+                }
+                
+                let html = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
+                
+                vendors.forEach(vendor => {
+                    const date = new Date(vendor.created_at).toLocaleString();
+                    const statusColor = vendor.status === 'approved' ? 'var(--success)' : 
+                                       vendor.status === 'rejected' ? 'var(--danger)' : 'var(--warning)';
+                    
+                    html += `
+                        <div style="padding: 1rem; background: var(--content-bg); border-radius: 10px; border-left: 4px solid ${statusColor};">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>${vendor.business_name}</strong>
+                                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">
+                                        Owner: ${vendor.full_name || 'N/A'} • Status: <span style="color: ${statusColor}; font-weight: 600;">${vendor.status.toUpperCase()}</span>
+                                    </p>
+                                </div>
+                                <span style="color: var(--text-secondary); font-size: 0.85rem;">${date}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+            }
+        }
+
+        // Show Section
+        function showSection(sectionName) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (event?.target) {
+                event.target.closest('.nav-link')?.classList.add('active');
+            }
+            
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`section-${sectionName}`).classList.add('active');
+            
+            const titles = {
+                'overview': 'Dashboard Overview',
+                'pending': 'Pending Vendor Approvals',
+                'vendors': 'All Vendors Management',
+                'products': 'All Products'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
+        }
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Close Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar && sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                (!toggle || !toggle.contains(e.target))) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
