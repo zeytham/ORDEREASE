@@ -23,6 +23,7 @@
             --border: #E2E8F0;
             --shadow: rgba(0,0,0,0.1);
             --sidebar-width: 280px;
+            --topbar-height: 70px;
         }
         
         * {
@@ -48,9 +49,9 @@
             background: var(--sidebar-bg);
             padding: 2rem 0;
             overflow-y: auto;
-            z-index: 1000;
+            z-index: 999;
             box-shadow: 4px 0 20px var(--shadow);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .sidebar::-webkit-scrollbar {
@@ -155,30 +156,35 @@
         
         .topbar {
             background: var(--card-bg);
-            padding: 1.5rem 2rem;
+            padding: 1rem 1.5rem;
             box-shadow: 0 2px 10px var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 998;
+            min-height: var(--topbar-height);
+            gap: 1rem;
         }
         
         .topbar h2 {
-            font-size: 1.75rem;
+            font-size: clamp(1.25rem, 4vw, 1.75rem);
             font-weight: 700;
             color: var(--text-primary);
+            margin: 0;
         }
         
         .search-bar {
             display: flex;
             align-items: center;
             background: var(--content-bg);
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-radius: 50px;
             border: 2px solid var(--border);
             transition: all 0.3s;
+            flex: 1;
+            max-width: 400px;
         }
         
         .search-bar:focus-within {
@@ -191,7 +197,8 @@
             outline: none;
             background: transparent;
             margin-left: 0.5rem;
-            width: 300px;
+            width: 100%;
+            font-size: clamp(0.875rem, 2vw, 1rem);
         }
         
         .clear-search {
@@ -208,14 +215,14 @@
         }
         
         .content-area {
-            padding: 2rem;
+            padding: clamp(1rem, 3vw, 2rem);
         }
         
         /* Cards */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+            gap: clamp(1rem, 3vw, 2rem);
             margin-top: 2rem;
         }
         
@@ -610,16 +617,21 @@
         .menu-toggle {
             display: none;
             position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 2000;
+            top: 0.75rem;
+            left: 0.75rem;
+            z-index: 1000;
             background: var(--primary);
             color: white;
             border: none;
-            padding: 1rem;
-            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 12px var(--shadow);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .menu-toggle:active {
+            transform: scale(0.95);
         }
         
         .alert {
@@ -675,27 +687,26 @@
                 display: block;
             }
             
-            .card-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            }
-            
-            .search-bar input {
-                width: 200px;
+            .topbar {
+                padding-left: 4.5rem;
             }
         }
         
         @media (max-width: 768px) {
             .topbar {
                 flex-direction: column;
+                align-items: stretch;
                 gap: 1rem;
+                padding: 1rem;
+                padding-left: 4.5rem;
+            }
+            
+            .topbar h2 {
+                font-size: 1.25rem;
             }
             
             .search-bar {
-                width: 100%;
-            }
-            
-            .search-bar input {
-                width: 100%;
+                max-width: 100%;
             }
             
             .card-grid {
@@ -709,6 +720,40 @@
             .form-container {
                 padding: 1.5rem;
                 margin: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .vendor-card .card-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .logo-text {
+                font-size: 1.25rem;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .slideshow-container {
+                height: 200px;
+            }
+        }
+        
+        @media (min-width: 1440px) {
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             }
         }
     </style>
@@ -746,6 +791,12 @@
                 </div>
             </div>
             <div class="nav-item">
+                <div class="nav-link" onclick="showPage('terms')">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Terms & Services</span>
+                </div>
+            </div>
+            <div class="nav-item">
                 <div class="nav-link" onclick="showPage('register')">
                     <i class="fas fa-user-plus"></i>
                     <span>Jiandikishe</span>
@@ -761,8 +812,10 @@
         
         <div class="sidebar-footer">
             <p>© 2025 OrderEase</p>
-            <strong>ZEYANA THABIT JUMA</strong>
+            <strong> DEVELOPER: ZEYANA UMA</strong>
             <p style="margin-top: 0.5rem;">Abdulrahman Al-Sumait University</p>
+            <p style="margin-top: 0.5rem;">zeyanajuma204@gmail.com</p>
+            <p style="margin-top: 0.5rem;">+255 624 945 9191</p>
         </div>
     </aside>
 
@@ -797,324 +850,324 @@
 
     <script>
         const SUPABASE_URL = 'https://sjmqrkjbwgdoxjqsfklr.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqbXFya2pid2dkb3hqcXNma2xyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyOTQ5MzMsImV4cCI6MjA3Nzg3MDkzM30.q7NjOZlyfZfpHOINBS_fJjccz9tuvcNvxBol6i9DpbQ';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqbXFya2pid2dkb3hqcXNma2xyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyOTQ5MzMsImV4cCI6MjA3Nzg3MDkzM30.q7NjOZlyfZfpHOINBS_fJjccz9tuvcNvxBol6i9DpbQ';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let allVendors = [];
+const slideshows = {};
+
+// Load Vendors
+async function loadVendorsFromDatabase() {
+    try {
+        const { data: vendors, error } = await supabase
+            .from('vendors')
+            .select('*')
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false });
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        if (error) throw error;
         
-        let allVendors = [];
-        const slideshows = {};
-
-        // Load Vendors
-        async function loadVendorsFromDatabase() {
-            try {
-                const { data: vendors, error } = await supabase
-                    .from('vendors')
-                    .select('*')
-                    .eq('status', 'approved')
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                if (!vendors || vendors.length === 0) {
-                    allVendors = [];
-                    return;
-                }
-                
-                for (let vendor of vendors) {
-                    const { data: products } = await supabase
-                        .from('products')
-                        .select('*')
-                        .eq('vendor_id', vendor.id)
-                        .order('created_at', { ascending: false });
-                    
-                    vendor.products = products || [];
-                    
-                    const { data: images } = await supabase
-                        .from('images')
-                        .select('*')
-                        .eq('vendor_id', vendor.id);
-                    
-                    vendor.images = images?.map(img => img.image_url) || [];
-                    
-                    if (vendor.images.length === 0) {
-                        vendor.images = ['https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=500'];
-                    }
-                }
-                
-                allVendors = vendors;
-            } catch (error) {
-                console.error('Error loading vendors:', error);
-                allVendors = [];
+        if (!vendors || vendors.length === 0) {
+            allVendors = [];
+            return;
+        }
+        
+        for (let vendor of vendors) {
+            const { data: products } = await supabase
+                .from('products')
+                .select('*')
+                .eq('vendor_id', vendor.id)
+                .order('created_at', { ascending: false });
+            
+            vendor.products = products || [];
+            
+            const { data: images } = await supabase
+                .from('images')
+                .select('*')
+                .eq('vendor_id', vendor.id);
+            
+            vendor.images = images?.map(img => img.image_url) || [];
+            
+            if (vendor.images.length === 0) {
+                vendor.images = ['https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=500'];
             }
         }
+        
+        allVendors = vendors;
+    } catch (error) {
+        console.error('Error loading vendors:', error);
+        allVendors = [];
+    }
+}
 
-        // Slideshow
-        function initSlideshow(vendorId) {
-            if (!slideshows[vendorId]) {
-                slideshows[vendorId] = { currentSlide: 0, autoPlay: null };
-            }
-            showSlide(vendorId, 0);
-            startAutoPlay(vendorId);
-        }
+// Slideshow Functions
+function initSlideshow(vendorId) {
+    if (!slideshows[vendorId]) {
+        slideshows[vendorId] = { currentSlide: 0, autoPlay: null };
+    }
+    showSlide(vendorId, 0);
+    startAutoPlay(vendorId);
+}
 
-        function showSlide(vendorId, index) {
-            const slides = document.querySelectorAll(`#slideshow-${vendorId} .slide`);
-            const dots = document.querySelectorAll(`#slideshow-${vendorId} .dot`);
-            
-            if (!slides.length) return;
-            
-            slides.forEach(s => s.classList.remove('active'));
-            dots.forEach(d => d.classList.remove('active'));
-            
-            if (index >= slides.length) index = 0;
-            if (index < 0) index = slides.length - 1;
-            
-            slideshows[vendorId].currentSlide = index;
-            slides[index].classList.add('active');
-            if (dots[index]) dots[index].classList.add('active');
-        }
+function showSlide(vendorId, index) {
+    const slides = document.querySelectorAll(`#slideshow-${vendorId} .slide`);
+    const dots = document.querySelectorAll(`#slideshow-${vendorId} .dot`);
+    
+    if (!slides.length) return;
+    
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
+    
+    if (index >= slides.length) index = 0;
+    if (index < 0) index = slides.length - 1;
+    
+    slideshows[vendorId].currentSlide = index;
+    slides[index].classList.add('active');
+    if (dots[index]) dots[index].classList.add('active');
+}
 
-        function changeSlide(vendorId, direction) {
-            stopAutoPlay(vendorId);
-            const newIndex = slideshows[vendorId].currentSlide + direction;
-            showSlide(vendorId, newIndex);
-            startAutoPlay(vendorId);
-        }
+function changeSlide(vendorId, direction) {
+    stopAutoPlay(vendorId);
+    const newIndex = slideshows[vendorId].currentSlide + direction;
+    showSlide(vendorId, newIndex);
+    startAutoPlay(vendorId);
+}
 
-        function goToSlide(vendorId, index) {
-            stopAutoPlay(vendorId);
-            showSlide(vendorId, index);
-            startAutoPlay(vendorId);
-        }
+function goToSlide(vendorId, index) {
+    stopAutoPlay(vendorId);
+    showSlide(vendorId, index);
+    startAutoPlay(vendorId);
+}
 
-        function startAutoPlay(vendorId) {
-            stopAutoPlay(vendorId);
-            slideshows[vendorId].autoPlay = setInterval(() => {
-                const newIndex = slideshows[vendorId].currentSlide + 1;
-                showSlide(vendorId, newIndex);
-            }, 4000);
-        }
+function startAutoPlay(vendorId) {
+    stopAutoPlay(vendorId);
+    slideshows[vendorId].autoPlay = setInterval(() => {
+        const newIndex = slideshows[vendorId].currentSlide + 1;
+        showSlide(vendorId, newIndex);
+    }, 4000);
+}
 
-        function stopAutoPlay(vendorId) {
-            if (slideshows[vendorId]?.autoPlay) {
-                clearInterval(slideshows[vendorId].autoPlay);
-            }
-        }
+function stopAutoPlay(vendorId) {
+    if (slideshows[vendorId]?.autoPlay) {
+        clearInterval(slideshows[vendorId].autoPlay);
+    }
+}
 
-        // Render Vendors
-        function renderVendors(vendorsList) {
-            const grid = document.getElementById('vendorsGrid');
-            if (!grid) return;
+// Render Vendors
+function renderVendors(vendorsList) {
+    const grid = document.getElementById('vendorsGrid');
+    if (!grid) return;
 
-            if (!vendorsList || vendorsList.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
-                        <i class="fas fa-store-slash" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.3; margin-bottom: 1rem;"></i>
-                        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Hakuna Wauzaji</h3>
-                        <p style="color: var(--text-secondary);">Bado hakuna wauzaji waliojisajili. Rudi baadaye!</p>
+    if (!vendorsList || vendorsList.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                <i class="fas fa-store-slash" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.3; margin-bottom: 1rem;"></i>
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Hakuna Wauzaji</h3>
+                <p style="color: var(--text-secondary);">Bado hakuna wauzaji waliojisajili. Rudi baadaye!</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = vendorsList.map(vendor => `
+        <div class="vendor-card">
+            <div class="slideshow-container" id="slideshow-${vendor.id}">
+                ${vendor.images.map((img, idx) => `
+                    <div class="slide ${idx === 0 ? 'active' : ''}">
+                        <img src="${img}" alt="${vendor.business_name}" 
+                             onerror="this.src='https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=500'" 
+                             loading="lazy">
                     </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = vendorsList.map(vendor => `
-                <div class="vendor-card">
-                    <div class="slideshow-container" id="slideshow-${vendor.id}">
-                        ${vendor.images.map((img, idx) => `
-                            <div class="slide ${idx === 0 ? 'active' : ''}">
-                                <img src="${img}" alt="${vendor.business_name}" 
-                                     onerror="this.src='https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=500'" 
-                                     loading="lazy">
+                `).join('')}
+                ${vendor.images.length > 1 ? `
+                    <button class="slide-nav prev" onclick="changeSlide(${vendor.id}, -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slide-nav next" onclick="changeSlide(${vendor.id}, 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <div class="slide-dots">
+                        ${vendor.images.map((_, idx) => `
+                            <span class="dot ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${vendor.id}, ${idx})"></span>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </div>
+            
+            <div class="card-content">
+                <div class="vendor-header">
+                    <h3 class="vendor-title">${vendor.business_name}</h3>
+                    <span class="badge">${vendor.category}</span>
+                </div>
+                
+                <div class="vendor-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> ${vendor.location}</span>
+                    <span><i class="fas fa-star"></i> ${vendor.rating || '4.5'}</span>
+                </div>
+                
+                <div class="products-preview">
+                    <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                        <i class="fas fa-box"></i> Sampuli za Bidhaa:
+                    </h4>
+                    ${vendor.products.length > 0 ? `
+                        ${vendor.products.slice(0, 3).map(product => `
+                            <div class="product-item">
+                                <span>${product.name}</span>
+                                <span class="price">TSh ${product.price.toLocaleString()}</span>
                             </div>
                         `).join('')}
-                        ${vendor.images.length > 1 ? `
-                            <button class="slide-nav prev" onclick="changeSlide(${vendor.id}, -1)">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="slide-nav next" onclick="changeSlide(${vendor.id}, 1)">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                            <div class="slide-dots">
-                                ${vendor.images.map((_, idx) => `
-                                    <span class="dot ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${vendor.id}, ${idx})"></span>
-                                `).join('')}
+                        ${vendor.products.length > 3 ? `
+                            <div class="view-more-link" onclick="showVendorDetails('${vendor.id}')">
+                                <i class="fas fa-plus-circle"></i> +${vendor.products.length - 3} bidhaa zaidi - Bofya kuangalia
                             </div>
                         ` : ''}
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="vendor-header">
-                            <h3 class="vendor-title">${vendor.business_name}</h3>
-                            <span class="badge">${vendor.category}</span>
-                        </div>
-                        
-                        <div class="vendor-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${vendor.location}</span>
-                            <span><i class="fas fa-star"></i> ${vendor.rating || '4.5'}</span>
-                        </div>
-                        
-                        <div class="products-preview">
-                            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
-                                <i class="fas fa-box"></i> Sampuli za Bidhaa:
-                            </h4>
-                            ${vendor.products.length > 0 ? `
-                                ${vendor.products.slice(0, 3).map(product => `
-                                    <div class="product-item">
-                                        <span>${product.name}</span>
-                                        <span class="price">TSh ${product.price.toLocaleString()}</span>
-                                    </div>
-                                `).join('')}
-                                ${vendor.products.length > 3 ? `
-                                    <div class="view-more-link" onclick="showVendorDetails('${vendor.id}')">
-                                        <i class="fas fa-plus-circle"></i> +${vendor.products.length - 3} bidhaa zaidi - Bofya kuangalia
-                                    </div>
-                                ` : ''}
-                            ` : '<p style="color: var(--text-secondary); font-style: italic; padding: 1rem 0;">Hakuna bidhaa zilizowekwa bado</p>'}
-                        </div>
-                        
-                        <div class="card-actions">
-                            ${vendor.products.length > 0 ? `
-                                <button class="btn btn-secondary" onclick="showVendorDetails('${vendor.id}')">
-                                    <i class="fas fa-list"></i> Bei Zote
-                                </button>
-                            ` : ''}
-                            <a href="https://wa.me/${vendor.phone}?text=${encodeURIComponent(`Habari! Ninataka kuweka order kutoka *${vendor.business_name}* kupitia OrderEase Platform.`)}" 
-                               target="_blank" class="btn btn-whatsapp">
-                                <i class="fab fa-whatsapp"></i> Order
-                            </a>
-                        </div>
-                    </div>
+                    ` : '<p style="color: var(--text-secondary); font-style: italic; padding: 1rem 0;">Hakuna bidhaa zilizowekwa bado</p>'}
                 </div>
-            `).join('');
-
-            vendorsList.forEach(vendor => {
-                if (vendor.images.length > 1) {
-                    initSlideshow(vendor.id);
-                }
-            });
-        }
-
-        // Show Vendor Details
-        function showVendorDetails(vendorId) {
-            const vendor = allVendors.find(v => v.id === vendorId);
-            if (!vendor) return;
-
-            document.getElementById('modalTitle').textContent = vendor.business_name;
-            document.getElementById('modalBody').innerHTML = `
-                <div style="margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <span class="badge">${vendor.category}</span>
-                        <span style="color: var(--text-secondary);">
-                            <i class="fas fa-star" style="color: var(--primary);"></i> ${vendor.rating || '4.5'}
-                        </span>
-                    </div>
-                    <p style="color: var(--text-secondary);">
-                        <i class="fas fa-map-marker-alt"></i> ${vendor.location}
-                    </p>
-                </div>
-
-                <h3 style="margin-bottom: 1rem;">
-                    <i class="fas fa-list-ul" style="color: var(--primary);"></i>
-                    Bei Kamili za Bidhaa (${vendor.products.length})
-                </h3>
                 
-                <div class="price-list">
-                    ${vendor.products.length > 0 ? vendor.products.map(product => `
-                        <div class="price-item">
-                            <span style="font-weight: 500;">${product.name}</span>
-                            <span class="price" style="font-size: 1.2rem;">TSh ${product.price.toLocaleString()}</span>
-                        </div>
-                    `).join('') : '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Hakuna bidhaa zilizowekwa</p>'}
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <div class="card-actions">
+                    ${vendor.products.length > 0 ? `
+                        <button class="btn btn-secondary" onclick="showVendorDetails('${vendor.id}')">
+                            <i class="fas fa-list"></i> Bei Zote
+                        </button>
+                    ` : ''}
                     <a href="https://wa.me/${vendor.phone}?text=${encodeURIComponent(`Habari! Ninataka kuweka order kutoka *${vendor.business_name}* kupitia OrderEase Platform.`)}" 
-                       target="_blank" class="btn btn-whatsapp" style="flex: 1;">
-                        <i class="fab fa-whatsapp"></i> Order Sasa
+                       target="_blank" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Order
                     </a>
-                    <button class="btn btn-secondary" onclick="closeModal()">
-                        <i class="fas fa-times"></i> Funga
-                    </button>
                 </div>
-            `;
+            </div>
+        </div>
+    `).join('');
 
-            document.getElementById('detailsModal').classList.add('active');
+    vendorsList.forEach(vendor => {
+        if (vendor.images.length > 1) {
+            initSlideshow(vendor.id);
         }
+    });
+}
 
-        // Close Modal
-        function closeModal() {
-            document.getElementById('detailsModal').classList.remove('active');
-        }
+// Show Vendor Details Modal
+function showVendorDetails(vendorId) {
+    const vendor = allVendors.find(v => v.id === vendorId);
+    if (!vendor) return;
 
-        // Search
-        function searchVendors() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            const clearBtn = document.getElementById('clearSearch');
-            
-            clearBtn.style.display = query ? 'block' : 'none';
+    document.getElementById('modalTitle').textContent = vendor.business_name;
+    document.getElementById('modalBody').innerHTML = `
+        <div style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <span class="badge">${vendor.category}</span>
+                <span style="color: var(--text-secondary);">
+                    <i class="fas fa-star" style="color: var(--primary);"></i> ${vendor.rating || '4.5'}
+                </span>
+            </div>
+            <p style="color: var(--text-secondary);">
+                <i class="fas fa-map-marker-alt"></i> ${vendor.location}
+            </p>
+        </div>
 
-            if (!query) {
-                renderVendors(allVendors);
-                return;
-            }
+        <h3 style="margin-bottom: 1rem;">
+            <i class="fas fa-list-ul" style="color: var(--primary);"></i>
+            Bei Kamili za Bidhaa (${vendor.products.length})
+        </h3>
+        
+        <div class="price-list">
+            ${vendor.products.length > 0 ? vendor.products.map(product => `
+                <div class="price-item">
+                    <span style="font-weight: 500;">${product.name}</span>
+                    <span class="price" style="font-size: 1.2rem;">TSh ${product.price.toLocaleString()}</span>
+                </div>
+            `).join('') : '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Hakuna bidhaa zilizowekwa</p>'}
+        </div>
 
-            const filtered = allVendors.filter(vendor => {
-                return vendor.business_name.toLowerCase().includes(query) ||
-                       vendor.category.toLowerCase().includes(query) ||
-                       vendor.location.toLowerCase().includes(query) ||
-                       vendor.products.some(p => p.name.toLowerCase().includes(query));
-            });
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <a href="https://wa.me/${vendor.phone}?text=${encodeURIComponent(`Habari! Ninataka kuweka order kutoka *${vendor.business_name}* kupitia OrderEase Platform.`)}" 
+               target="_blank" class="btn btn-whatsapp" style="flex: 1;">
+                <i class="fab fa-whatsapp"></i> Order Sasa
+            </a>
+            <button class="btn btn-secondary" onclick="closeModal()">
+                <i class="fas fa-times"></i> Funga
+            </button>
+        </div>
+    `;
 
-            renderVendors(filtered);
-        }
+    document.getElementById('detailsModal').classList.add('active');
+}
 
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('clearSearch').style.display = 'none';
-            renderVendors(allVendors);
-        }
+// Close Modal
+function closeModal() {
+    document.getElementById('detailsModal').classList.remove('active');
+}
 
-        // Filter by Category
-        function filterByCategory(category) {
-            const filtered = allVendors.filter(v => v.category === category);
-            showPage('vendors');
-            setTimeout(() => renderVendors(filtered), 100);
-        }
+// Search Functions
+function searchVendors() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const clearBtn = document.getElementById('clearSearch');
+    
+    clearBtn.style.display = query ? 'block' : 'none';
 
-        // Submit Registration Form
-        async function submitVendorForm(e) {
-            e.preventDefault();
-            
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inasajili...';
-            
-            const formData = {
-                full_name: document.getElementById('fullName').value.trim(),
-                business_name: document.getElementById('businessName').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                phone: document.getElementById('phoneNumber').value.trim(),
-                password: document.getElementById('password').value,
-                category: document.getElementById('businessType').value,
-                location: document.getElementById('location').value.trim(),
-                status: 'pending',
-                rating: 4.5
-            };
+    if (!query) {
+        renderVendors(allVendors);
+        return;
+    }
 
-            try {
-                const { data, error } = await supabase
-                    .from('vendors')
-                    .insert([formData])
-                    .select();
-                
-                if (error) throw error;
-                
-                showAlert('success', '✅ Hongera! Maombi yako yametumwa. Tutakuwasiliana nawe baada ya Admin kuidhinisha account yako!');
-                document.getElementById('vendorForm').reset();
-                
-                const adminWhatsApp = '+255624945919';
-                const message = `🆕 *MUUZAJI MPYA - OrderEase Registration*
+    const filtered = allVendors.filter(vendor => {
+        return vendor.business_name.toLowerCase().includes(query) ||
+               vendor.category.toLowerCase().includes(query) ||
+               vendor.location.toLowerCase().includes(query) ||
+               vendor.products.some(p => p.name.toLowerCase().includes(query));
+    });
+
+    renderVendors(filtered);
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('clearSearch').style.display = 'none';
+    renderVendors(allVendors);
+}
+
+// Filter by Category
+function filterByCategory(category) {
+    const filtered = allVendors.filter(v => v.category === category);
+    showPage('vendors');
+    setTimeout(() => renderVendors(filtered), 100);
+}
+
+// Submit Vendor Registration Form
+async function submitVendorForm(e) {
+    e.preventDefault();
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inasajili...';
+    
+    const formData = {
+        full_name: document.getElementById('fullName').value.trim(),
+        business_name: document.getElementById('businessName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phoneNumber').value.trim(),
+        password: document.getElementById('password').value,
+        category: document.getElementById('businessType').value,
+        location: document.getElementById('location').value.trim(),
+        status: 'pending',
+        rating: 4.5
+    };
+
+    try {
+        const { data, error } = await supabase
+            .from('vendors')
+            .insert([formData])
+            .select();
+        
+        if (error) throw error;
+        
+        showAlert('success', '✅ Hongera! Maombi yako yametumwa. Tutakuwasiliana nawe baada ya Admin kuidhinisha account yako!');
+        document.getElementById('vendorForm').reset();
+        
+        const adminWhatsApp = '+255624945919';
+        const message = `🆕 *MUUZAJI MPYA - OrderEase Registration*
 
 📋 *TAARIFA ZA MUUZAJI:*
 
@@ -1132,274 +1185,424 @@
 
 🔗 Ingia Admin Dashboard kuidhinisha`;
 
-                window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
-                
-            } catch (error) {
-                console.error('Registration error:', error);
-                showAlert('error', '❌ Kuna tatizo! Jaribu tena au wasiliana na Admin.');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-            }
-        }
+        window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        showAlert('error', '❌ Kuna tatizo! Jaribu tena au wasiliana na Admin.');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+}
 
-        function showAlert(type, message) {
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type} show`;
-            alert.textContent = message;
-            
-            const container = document.querySelector('.form-container') || document.querySelector('.content-area');
-            container.insertBefore(alert, container.firstChild);
-            
-            setTimeout(() => alert.remove(), 5000);
-        }
+function showAlert(type, message) {
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} show`;
+    alert.textContent = message;
+    
+    const container = document.querySelector('.form-container') || document.querySelector('.content-area');
+    container.insertBefore(alert, container.firstChild);
+    
+    setTimeout(() => alert.remove(), 5000);
+}
 
-        // Pages
-        function getHomePage() {
-            return `
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>${allVendors.length}</h3>
-                        <p><i class="fas fa-store"></i> Wauzaji Waliojiunga</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>${allVendors.reduce((sum, v) => sum + (v.products?.length || 0), 0)}+</h3>
-                        <p><i class="fas fa-box"></i> Bidhaa Zinazopatikana</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>4.8★</h3>
-                        <p><i class="fas fa-star"></i> Wastani wa Rating</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>24/7</h3>
-                        <p><i class="fas fa-clock"></i> Huduma Available</p>
-                    </div>
-                </div>
+// Page Content Functions
+function getHomePage() {
+    return `
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>${allVendors.length}</h3>
+                <p><i class="fas fa-store"></i> Wauzaji Waliojiunga</p>
+            </div>
+            <div class="stat-card">
+                <h3>${allVendors.reduce((sum, v) => sum + (v.products?.length || 0), 0)}+</h3>
+                <p><i class="fas fa-box"></i> Bidhaa Zinazopatikana</p>
+            </div>
+            <div class="stat-card">
+                <h3>4.8★</h3>
+                <p><i class="fas fa-star"></i> Wastani wa Rating</p>
+            </div>
+            <div class="stat-card">
+                <h3>24/7</h3>
+                <p><i class="fas fa-clock"></i> Huduma Available</p>
+            </div>
+        </div>
 
-                <div style="background: linear-gradient(135deg, var(--secondary), var(--primary-dark)); color: white; padding: 3rem; border-radius: 20px; margin-bottom: 2rem; text-align: center;">
-                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Karibu OrderEase</h1>
-                    <p style="font-size: 1.2rem; opacity: 0.9;">Nunua chochote ulichohitaji - Chakula, Snacks, Cosmetics na zaidi!</p>
-                    <p style="margin-top: 1rem;"><strong>Abdulrahman Al-Sumait University</strong></p>
-                    <button class="btn btn-primary" style="margin-top: 1.5rem; padding: 1rem 2rem;" onclick="showPage('vendors')">
-                        <i class="fas fa-shopping-cart"></i> Anza Kununua
+        <div style="background: linear-gradient(135deg, var(--secondary), var(--primary-dark)); color: white; padding: 3rem; border-radius: 20px; margin-bottom: 2rem; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Karibu OrderEase</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9;">Nunua chochote ulichohitaji - Chakula, Snacks, Cosmetics na zaidi!</p>
+            <p style="margin-top: 1rem;"><strong>Abdulrahman Al-Sumait University</strong></p>
+            <button class="btn btn-primary" style="margin-top: 1.5rem; padding: 1rem 2rem;" onclick="showPage('vendors')">
+                <i class="fas fa-shopping-cart"></i> Anza Kununua
+            </button>
+        </div>
+
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">🔥 Wauzaji Maarufu</h2>
+        <div class="card-grid" id="vendorsGrid"></div>
+    `;
+}
+
+function getVendorsPage() {
+    return `
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">
+            <i class="fas fa-store"></i> Wauzaji Wote
+        </h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Chagua muuzaji na angalia bei zao kamili
+        </p>
+        <div class="card-grid" id="vendorsGrid"></div>
+    `;
+}
+
+function getCategoriesPage() {
+    const categoryCounts = {};
+    allVendors.forEach(v => {
+        categoryCounts[v.category] = (categoryCounts[v.category] || 0) + 1;
+    });
+
+    const categories = [
+        {name: "Vioksi & Chakula", icon: "fa-utensils", color: "#EF4444"},
+        {name: "Cosmetics & Beauty", icon: "fa-spray-can", color: "#EC4899"},
+        {name: "Snacks & Drinks", icon: "fa-cookie-bite", color: "#F59E0B"},
+        {name: "Stationery", icon: "fa-pen", color: "#3B82F6"},
+        {name: "Transport", icon: "fa-motorcycle", color: "#8B5CF6"},
+        {name: "Electronics", icon: "fa-mobile-alt", color: "#10B981"}
+    ];
+
+    return `
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">
+            <i class="fas fa-th-large"></i> Categories za Bidhaa
+        </h2>
+        <div class="card-grid">
+            ${categories.map(cat => {
+                const count = categoryCounts[cat.name] || 0;
+                if (count === 0) return '';
+                return `
+                <div style="background: var(--card-bg); padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent;" 
+                     onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='${cat.color}'"
+                     onmouseout="this.style.transform=''; this.style.borderColor='transparent'"
+                     onclick="filterByCategory('${cat.name}')">
+                    <div style="font-size: 4rem; color: ${cat.color}; margin-bottom: 1rem;">
+                        <i class="fas ${cat.icon}"></i>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${cat.name}</h3>
+                    <p style="color: var(--text-secondary);">${count} Wauzaji</p>
+                    <button class="btn btn-secondary" style="margin-top: 1rem;">
+                        Angalia <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
+            `}).join('')}
+        </div>
+    `;
+}
 
-                <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">🔥 Wauzaji Maarufu</h2>
-                <div class="card-grid" id="vendorsGrid"></div>
-            `;
-        }
+function getRegisterPage() {
+    return `
+        <div class="form-container">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div class="logo-icon" style="margin: 0 auto 1rem;">OE</div>
+                <h2 style="margin-bottom: 0.5rem;">Jiandikishe Kuwa Muuzaji</h2>
+                <p style="color: var(--text-secondary);">Anza kuuza bidhaa zako kwa wanafunzi!</p>
+            </div>
 
-        function getVendorsPage() {
-            return `
-                <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">
-                    <i class="fas fa-store"></i> Wauzaji Wote
-                </h2>
-                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                    Chagua muuzaji na angalia bei zao kamili
+            <form id="vendorForm" onsubmit="submitVendorForm(event)">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user"></i> Jina Kamili *</label>
+                    <input type="text" class="form-control" id="fullName" placeholder="Mfano: John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-store"></i> Jina la Biashara *</label>
+                    <input type="text" class="form-control" id="businessName" placeholder="Mfano: Mama Halima Snacks" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-envelope"></i> Email *</label>
+                    <input type="email" class="form-control" id="email" placeholder="email@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-phone"></i> Namba ya Simu (WhatsApp) *</label>
+                    <input type="tel" class="form-control" id="phoneNumber" placeholder="+255712345678" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-lock"></i> Password *</label>
+                    <input type="password" class="form-control" id="password" placeholder="••••••••" minlength="6" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-list"></i> Aina ya Biashara *</label>
+                    <select class="form-control" id="businessType" required>
+                        <option value="">Chagua Aina...</option>
+                        <option>Vioksi & Chakula</option>
+                        <option>Cosmetics & Beauty</option>
+                        <option>Snacks & Drinks</option>
+                        <option>Stationery</option>
+                        <option>Transport</option>
+                        <option>Electronics</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-map-marker-alt"></i> Mahali (Hostel/Location) *</label>
+                    <input type="text" class="form-control" id="location" placeholder="Mfano: Mlimani Hostel" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                    <i class="fas fa-user-plus"></i> Jiandikishe
+                </button>
+
+                <p style="text-align: center; color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> Maombi yako yataenda kwa Admin ili kuidhinishwa
                 </p>
-                <div class="card-grid" id="vendorsGrid"></div>
-            `;
-        }
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <p style="color: var(--text-secondary);">Tayari una account?</p>
+                    <a href="admin.html" class="btn btn-secondary" style="margin-top: 0.5rem; text-decoration: none; display: inline-flex;">
+                        <i class="fas fa-sign-in-alt"></i> Ingia Vendor Dashboard
+                    </a>
+                </div>
+            </form>
+        </div>
+    `;
+}
 
-        function getCategoriesPage() {
-            const categoryCounts = {};
-            allVendors.forEach(v => {
-                categoryCounts[v.category] = (categoryCounts[v.category] || 0) + 1;
-            });
+function getTermsPage() {
+    return `
+        <div class="form-container" style="max-width: 900px;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div class="logo-icon" style="margin: 0 auto 1rem;">OE</div>
+                <h2 style="margin-bottom: 0.5rem;">Terms of Service & Privacy Policy</h2>
+                <p style="color: var(--text-secondary);">Masharti ya Matumizi na Sera ya Faragha</p>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">Sasishwa Mwisho: November 2025</p>
+            </div>
 
-            const categories = [
-                {name: "Vioksi & Chakula", icon: "fa-utensils", color: "#EF4444"},
-                {name: "Cosmetics & Beauty", icon: "fa-spray-can", color: "#EC4899"},
-                {name: "Snacks & Drinks", icon: "fa-cookie-bite", color: "#F59E0B"},
-                {name: "Stationery", icon: "fa-pen", color: "#3B82F6"},
-                {name: "Transport", icon: "fa-motorcycle", color: "#8B5CF6"},
-                {name: "Electronics", icon: "fa-mobile-alt", color: "#10B981"}
-            ];
+            <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 2rem; border-radius: 16px; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">
+                    <i class="fas fa-handshake"></i> Karibu OrderEase Platform
+                </h3>
+                <p style="line-height: 1.8;">
+                    OrderEase ni jukwaa la soko la kampasi lililoundwa maalum kwa wanafunzi na wauzaji wa 
+                    Abdulrahman Al-Sumait University. Kwa kutumia huduma zetu, unakubali kufuata masharti yafuatayo.
+                </p>
+            </div>
 
-            return `
-                <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">
-                    <i class="fas fa-th-large"></i> Categories za Bidhaa
-                </h2>
-                <div class="card-grid">
-                    ${categories.map(cat => {
-                        const count = categoryCounts[cat.name] || 0;
-                        if (count === 0) return '';
-                        return `
-                        <div style="background: var(--card-bg); padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent;" 
-                             onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='${cat.color}'"
-                             onmouseout="this.style.transform=''; this.style.borderColor='transparent'"
-                             onclick="filterByCategory('${cat.name}')">
-                            <div style="font-size: 4rem; color: ${cat.color}; margin-bottom: 1rem;">
-                                <i class="fas ${cat.icon}"></i>
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-shield-alt"></i> 1. Matumizi ya Huduma
+                </h3>
+                <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>1.1 Watumiaji Walioidhinishwa:</strong> Huduma za OrderEase zinapatikana kwa wanafunzi, wafanyakazi, na wauzaji wote wa ndani na nje ya Abdulrahman Al-Sumait University.</p>
+                    
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>1.2 Usajili wa Wauzaji:</strong> Wauzaji lazima wapitie mchakato wa kidhinisho kabla ya kuanza kuuza kwenye jukwaa. Taarifa zote zilizotolewa lazima ziwe sahihi na za kweli.</p>
+                    
+                    <p style="margin-bottom: 0; line-height: 1.8;"><strong>1.3 Tabia ya Kimaadili:</strong> Watumiaji wote lazima wafuate kanuni za maadili, kuheshimiana, na sheria za jukwaa.</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-store"></i> 2. Majukumu ya Wauzaji
+                </h3>
+                <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>2.1 Ubora wa Bidhaa:</strong> Wauzaji wanahusika kuhakikisha bidhaa zao ni salama, za ubora, na zinafikiana na maelezo yaliyotolewa.</p>
+                    
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>2.2 Bei za Haki:</strong> Bei za bidhaa lazima ziwe za haki na kutokuwa na udanganyifu. Mabadiliko ya bei lazima yarushwe kwa wakati.</p>
+                    
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>2.3 Utoaji wa Haraka:</strong> Wauzaji lazima watimize maagizo kwa wakati na wajulishe wateja kuhusu ucheleweshaji wowote.</p>
+                    
+                    <p style="margin-bottom: 0; line-height: 1.8;"><strong>2.4 Huduma kwa Wateja:</strong> Itakiwa kutoa huduma nzuri kwa wateja na kujibu maswali na malalamiko kwa haraka.</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class ="fas fa-shopping-cart"></i> 3. Majukumu ya Wanunuzi
+                </h3>
+                <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>3.1 Maagizo ya Kweli:</strong> Weka maagizo ya bidhaa unayohitaji tu. Usiagize bidhaa bila nia ya kununua.</p>
+                    
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>3.2 Malipo:</strong> Fanya malipo kwa wakati kama ilivyokubaliana na muuzaji. Njia za malipo zinazokubaliwa ni malipo halisi.</p>
+                    
+                    <p style="margin-bottom: 0; line-height: 1.8;"><strong>3.3 Ukaguzi wa Bidhaa:</strong> Kagua bidhaa unapopokea na wasiliana na muuzaji mara moja kama kuna tatizo.</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-lock"></i> 4. Sera ya Faragha
+                </h3>
+                <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>4.1 Ukusanyaji wa Data:</strong> Tunakusanya taarifa za msingi kama jina, namba ya simu, email, na mahali kwa madhumuni ya kuwezesha huduma.</p>
+                    
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>4.2 Matumizi ya Data:</strong> Taarifa zako zinatumika tu kwa kusimamia akaunti yako, kuwezesha miamala, na kuboresha huduma zetu.</p>
+                    
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>4.3 Usalama wa Data:</strong> Tunatumia mbinu za usalama wa kisasa kuhifadhi taarifa zako. Hata hivyo, hakuna njia ya mawasiliano ya mtandao iliyo salama 100%.</p>
+                    
+                    <p style="margin-bottom: 0; line-height: 1.8;"><strong>4.4 Kushiriki na Watu Wengine:</strong> Hatushiriki taarifa zako za kibinafsi na wahusika wa tatu isipokuwa inapohitajika kisheria.</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-ban"></i> 5. Tabia Zilizopigwa Marufuku
+                </h3>
+                <div style="background: #FEE2E2; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #EF4444;">
+                    <p style="margin-bottom: 1rem; line-height: 1.8; color: #991B1B;"><strong>Mambo Yasiyoruhusiwa:</strong></p>
+                    <ul style="margin: 0; padding-left: 1.5rem; line-height: 1.8; color: #991B1B;">
+                        <li>Kuuza bidhaa za haramu au hatari</li>
+                        <li>Udanganyifu wa bei au ubora wa bidhaa</li>
+                        <li>Matumizi mabaya ya taarifa za watumiaji wengine</li>
+                        <li>Spam au matangazo yasiyohitajika</li>
+                        <li>Matendo ya uonevu au uchochezi</li>
+                        <li>Kujaribu kuingia bila idhini kwenye akaunti za wengine</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-gavel"></i> 6. Adhabu kwa Ukiukwaji
+                </h3>
+                <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 12px; border-left: 4px solid #F59E0B;">
+                    <p style="margin-bottom: 1rem; line-height: 1.8;">Ukiukwaji wa masharti haya unaweza kusababisha:</p>
+                    <ul style="margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+                        <li>Onyo rasmi</li>
+                        <li>Kusimamishwa kwa muda wa akaunti</li>
+                        <li>Kufutwa kabisa kwa akaunti</li>
+                        <li>Ripoti kwa mamlaka za kampasi ikiwa inabidi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-phone-alt"></i> 7. Mawasiliano
+                </h3>
+                <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <p style="margin-bottom: 1rem; line-height: 1.8;">Kwa maswali, malalamiko, au usaidizi kuhusu OrderEase, wasiliana nasi:</p>
+                    <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: white; border-radius: 8px;">
+                            <i class="fab fa-whatsapp" style="font-size: 2rem; color: #25D366;"></i>
+                            <div>
+                                <strong style="display: block; margin-bottom: 0.25rem;">WhatsApp Support</strong>
+                                <a href="https://wa.me/255624945919" style="color: var(--primary); text-decoration: none;">+255 624 945 919</a>
                             </div>
-                            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${cat.name}</h3>
-                            <p style="color: var(--text-secondary);">${count} Wauzaji</p>
-                            <button class="btn btn-secondary" style="margin-top: 1rem;">
-                                Angalia <i class="fas fa-arrow-right"></i>
-                            </button>
                         </div>
-                    `}).join('')}
-                </div>
-            `;
-        }
-
-        function getRegisterPage() {
-            return `
-                <div class="form-container">
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <div class="logo-icon" style="margin: 0 auto 1rem;">OE</div>
-                        <h2 style="margin-bottom: 0.5rem;">Jiandikishe Kuwa Muuzaji</h2>
-                        <p style="color: var(--text-secondary);">Anza kuuza bidhaa zako kwa wanafunzi!</p>
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: white; border-radius: 8px;">
+                            <i class="fas fa-university" style="font-size: 2rem; color: var(--primary);"></i>
+                            <div>
+                                <strong style="display: block; margin-bottom: 0.25rem;">Campus</strong>
+                                <span>Abdulrahman Al-Sumait University</span>
+                            </div>
+                        </div>
                     </div>
-
-                    <form id="vendorForm" onsubmit="submitVendorForm(event)">
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-user"></i> Jina Kamili *</label>
-                            <input type="text" class="form-control" id="fullName" placeholder="Mfano: John Doe" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-store"></i> Jina la Biashara *</label>
-                            <input type="text" class="form-control" id="businessName" placeholder="Mfano: Mama Halima Snacks" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-envelope"></i> Email *</label>
-                            <input type="email" class="form-control" id="email" placeholder="email@example.com" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-phone"></i> Namba ya Simu (WhatsApp) *</label>
-                            <input type="tel" class="form-control" id="phoneNumber" placeholder="+255712345678" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-lock"></i> Password *</label>
-                            <input type="password" class="form-control" id="password" placeholder="••••••••" minlength="6" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-list"></i> Aina ya Biashara *</label>
-                            <select class="form-control" id="businessType" required>
-                                <option value="">Chagua Aina...</option>
-                                <option>Vioksi & Chakula</option>
-                                <option>Cosmetics & Beauty</option>
-                                <option>Snacks & Drinks</option>
-                                <option>Stationery</option>
-                                <option>Transport</option>
-                                <option>Electronics</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-map-marker-alt"></i> Mahali (Hostel/Location) *</label>
-                            <input type="text" class="form-control" id="location" placeholder="Mfano: Mlimani Hostel" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
-                            <i class="fas fa-user-plus"></i> Jiandikishe
-                        </button>
-
-                        <p style="text-align: center; color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem;">
-                            <i class="fas fa-info-circle"></i> Maombi yako yataenda kwa Admin ili kuidhinishwa
-                        </p>
-                        
-                        <div style="text-align: center; margin-top: 1.5rem;">
-                            <p style="color: var(--text-secondary);">Tayari una account?</p>
-                            <a href="admin.html" class="btn btn-secondary" style="margin-top: 0.5rem; text-decoration: none; display: inline-flex;">
-                                <i class="fas fa-sign-in-alt"></i> Ingia Vendor Dashboard
-                            </a>
-                        </div>
-                    </form>
                 </div>
-            `;
-        }
+            </div>
 
-        // Show Page
-        function showPage(pageName) {
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            
-            const clickedLink = event?.target?.closest('.nav-link');
-            if (clickedLink) clickedLink.classList.add('active');
+            <div style="background: linear-gradient(135deg, #EEF2FF, #E0E7FF); padding: 2rem; border-radius: 16px; text-align: center;">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Kukubaliana na Masharti</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    Kwa kutumia OrderEase platform, unakubali masharti haya yote. Tunaweza kubadilisha masharti kwa wakati wowote, 
+                    na itakuwa jukumu lako kujua mabadiliko yoyote.
+                </p>
+                <button class="btn btn-primary" onclick="showPage('home')" style="padding: 1rem 2rem;">
+                    <i class="fas fa-home"></i> Rudi Nyumbani
+                </button>
+            </div>
+        </div>
+    `;
+}
 
-            const titles = {
-                home: 'Dashboard',
-                vendors: 'Wauzaji',
-                categories: 'Categories',
-                register: 'Jiandikishe'
-            };
-            document.getElementById('pageTitle').textContent = titles[pageName] || 'OrderEase';
+// Show Page Function
+function showPage(pageName) {
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    
+    const clickedLink = event?.target?.closest('.nav-link');
+    if (clickedLink) clickedLink.classList.add('active');
 
-            let pageContent = '';
-            switch(pageName) {
-                case 'home': pageContent = getHomePage(); break;
-                case 'vendors': pageContent = getVendorsPage(); break;
-                case 'categories': pageContent = getCategoriesPage(); break;
-                case 'register': pageContent = getRegisterPage(); break;
-                default: pageContent = getHomePage();
+    const titles = {
+        home: 'Dashboard',
+        vendors: 'Wauzaji',
+        categories: 'Categories',
+        register: 'Jiandikishe',
+        terms: 'Terms & Services'
+    };
+    document.getElementById('pageTitle').textContent = titles[pageName] || 'OrderEase';
+
+    let pageContent = '';
+    switch(pageName) {
+        case 'home': pageContent = getHomePage(); break;
+        case 'vendors': pageContent = getVendorsPage(); break;
+        case 'categories': pageContent = getCategoriesPage(); break;
+        case 'register': pageContent = getRegisterPage(); break;
+        case 'terms': pageContent = getTermsPage(); break;
+        default: pageContent = getHomePage();
+    }
+
+    document.getElementById('contentArea').innerHTML = pageContent;
+
+    if (pageName === 'home' || pageName === 'vendors') {
+        setTimeout(() => renderVendors(allVendors), 50);
+    }
+
+    if (window.innerWidth <= 1024) {
+        document.getElementById('sidebar')?.classList.remove('active');
+    }
+
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Toggle Sidebar
+function toggleSidebar() {
+    document.getElementById('sidebar')?.classList.toggle('active');
+}
+
+// Initialize App
+document.addEventListener('DOMContentLoaded', async function() {
+    const contentArea = document.getElementById('contentArea');
+    contentArea.innerHTML = `
+        <div style="text-align: center; padding: 4rem 2rem;">
+            <div class="spinner"></div>
+            <p style="color: var(--text-secondary); margin-top: 1rem;">Inapakia data...</p>
+        </div>
+    `;
+    
+    await loadVendorsFromDatabase();
+    showPage('home');
+    
+    // Real-time updates from Supabase
+    supabase.channel('vendors-changes')
+        .on('postgres_changes', 
+            { event: '*', schema: 'public', table: 'vendors' },
+            async () => {
+                await loadVendorsFromDatabase();
+                renderVendors(allVendors);
             }
+        )
+        .subscribe();
+});
 
-            document.getElementById('contentArea').innerHTML = pageContent;
+// Close modal when clicking outside
+document.getElementById('detailsModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
 
-            if (pageName === 'home' || pageName === 'vendors') {
-                setTimeout(() => renderVendors(allVendors), 50);
-            }
-
-            if (window.innerWidth <= 1024) {
-                document.getElementById('sidebar')?.classList.remove('active');
-            }
-
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        // Toggle Sidebar
-        function toggleSidebar() {
-            document.getElementById('sidebar')?.classList.toggle('active');
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async function() {
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = `
-                <div style="text-align: center; padding: 4rem 2rem;">
-                    <div class="spinner"></div>
-                    <p style="color: var(--text-secondary); margin-top: 1rem;">Inapakia data...</p>
-                </div>
-            `;
-            
-            await loadVendorsFromDatabase();
-            showPage('home');
-            
-            // Real-time updates
-            supabase.channel('vendors-changes')
-                .on('postgres_changes', 
-                    { event: '*', schema: 'public', table: 'vendors' },
-                    async () => {
-                        await loadVendorsFromDatabase();
-                        renderVendors(allVendors);
-                    }
-                )
-                .subscribe();
-        });
-
-        // Close modal on click outside
-        document.getElementById('detailsModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(e) {
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.querySelector('.menu-toggle');
-            
-            if (window.innerWidth <= 1024 && 
-                sidebar?.classList.contains('active') && 
-                !sidebar.contains(e.target) && 
-                !toggle?.contains(e.target)) {
-                sidebar.classList.remove('active');
-            }
-        });
-    </script>
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('sidebar');
+    const toggle = document.querySelector('.menu-toggle');
+    
+    if (window.innerWidth <= 1024 && 
+        sidebar?.classList.contains('active') && 
+        !sidebar.contains(e.target) && 
+        !toggle?.contains(e.target)) {
+        sidebar.classList.remove('active');
+    }
+});
+</script>
 </body>
 </html>
