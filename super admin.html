@@ -1402,7 +1402,7 @@
             }
         }
 
-        // Approve Vendor
+        // Approve Vendor - NO POPUP BLOCK!
         async function approveVendor(vendorId, businessName, phone, email, fullName) {
             if (!confirm(`Approve vendor: ${businessName}?`)) return;
             
@@ -1414,8 +1414,16 @@
                 
                 if (error) throw error;
                 
-                alert('✅ Vendor approved successfully!');
-                await loadAllData();
+                // Clean phone number
+                let cleanPhone = phone.replace(/[\s\-\+\(\)]/g, '');
+                
+                if (cleanPhone.startsWith('0')) {
+                    cleanPhone = '255' + cleanPhone.substring(1);
+                }
+                
+                if (!cleanPhone.startsWith('255')) {
+                    cleanPhone = '255' + cleanPhone;
+                }
                 
                 const message = `🎉 *HONGERA ${fullName || businessName}!*
 
@@ -1424,7 +1432,7 @@
 ━━━━━━━━━━━━━━━━━
 📱 *INGIA DASHBOARD YAKO SASA:*
 
-🔗 Link: [Your Website]/admin.html
+🔗 Link: https://orderease-platform.com/admin.html
 
 📧 *Login Credentials:*
 - Email: ${email}
@@ -1446,19 +1454,42 @@ Tunasubiri bidhaa zako!
 🏛️ Abdulrahman Al-Sumait University
 💻 Developer: ZEYANA THABIT JUMA`;
                 
-                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+                const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+                
+                const sendNow = confirm('✅ Vendor approved!\n\n📱 Click OK to send WhatsApp notification now.');
+                
+                if (sendNow) {
+                    // Use <a> tag click - won't be blocked!
+                    const link = document.createElement('a');
+                    link.href = whatsappUrl;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                
+                await loadAllData();
+                
             } catch (error) {
                 console.error('Error approving vendor:', error);
                 alert('❌ Error approving vendor!');
             }
         }
 
-        // Reject Vendor
+        // Reject Vendor - NO POPUP BLOCK!
         async function rejectVendor(vendorId, businessName) {
             const reason = prompt(`Reject vendor: ${businessName}?\n\nEnter reason (optional):`);
             if (reason === null) return;
             
             try {
+                const { data: vendor, error: fetchError } = await supabase
+                    .from('vendors')
+                    .select('phone, email, full_name')
+                    .eq('id', vendorId)
+                    .single();
+                
+                if (fetchError) throw fetchError;
+                
                 const { error } = await supabase
                     .from('vendors')
                     .update({ status: 'rejected' })
@@ -1466,7 +1497,51 @@ Tunasubiri bidhaa zako!
                 
                 if (error) throw error;
                 
-                alert('❌ Vendor rejected!');
+                // Clean phone number
+                let cleanPhone = vendor.phone.replace(/[\s\-\+\(\)]/g, '');
+                if (cleanPhone.startsWith('0')) {
+                    cleanPhone = '255' + cleanPhone.substring(1);
+                }
+                if (!cleanPhone.startsWith('255')) {
+                    cleanPhone = '255' + cleanPhone;
+                }
+                
+                const message = `😔 *Samahani ${vendor.full_name || businessName}*
+
+❌ Ombi lako la kujiunga na OrderEase Platform halikukubaliwa.
+
+━━━━━━━━━━━━━━━━━
+📋 *Sababu:*
+${reason || 'Maelezo hayakuwa kamili au hayana uhakika wa kutosha.'}
+
+━━━━━━━━━━━━━━━━━
+🔄 *Unaweza Kujaribu Tena:*
+Tafadhali hakikisha:
+✓ Maelezo yote yamejazwa kwa usahihi
+✓ Picha za biashara ni wazi
+✓ Taarifa za mawasiliano ni sahihi
+
+━━━━━━━━━━━━━━━━━
+📞 *Kwa Maswali:*
+Wasiliana nasi kupitia email: ${vendor.email}
+
+━━━━━━━━━━━━━━━━━
+🏛️ Abdulrahman Al-Sumait University
+💻 Developer: ZEYANA THABIT JUMA`;
+                
+                const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+                
+                const sendNow = confirm('❌ Vendor rejected!\n\n📱 Click OK to send WhatsApp notification.');
+                
+                if (sendNow) {
+                    const link = document.createElement('a');
+                    link.href = whatsappUrl;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                
                 await loadAllData();
             } catch (error) {
                 console.error('Error rejecting vendor:', error);
