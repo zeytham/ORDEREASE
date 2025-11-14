@@ -1012,9 +1012,16 @@ function renderVendors(vendorsList) {
                     </h4>
                     ${vendor.products.length > 0 ? `
                         ${vendor.products.slice(0, 3).map(product => `
-                            <div class="product-item">
-                                <span>${product.name}</span>
-                                <span class="price">TSh ${product.price.toLocaleString()}</span>
+                            <div class="product-item" style="flex-direction: column; align-items: flex-start; padding: 1rem 0;">
+                                <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
+                                    <span style="font-weight: 600;">${product.name}</span>
+                                    <span class="price">TSh ${product.price.toLocaleString()}</span>
+                                </div>
+                                ${product.description ? `
+                                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5; margin: 0; max-height: 3em; overflow: hidden;">
+                                        ${product.description}
+                                    </p>
+                                ` : ''}
                             </div>
                         `).join('')}
                         ${vendor.products.length > 3 ? `
@@ -1073,9 +1080,16 @@ function showVendorDetails(vendorId) {
         
         <div class="price-list">
             ${vendor.products.length > 0 ? vendor.products.map(product => `
-                <div class="price-item">
-                    <span style="font-weight: 500;">${product.name}</span>
-                    <span class="price" style="font-size: 1.2rem;">TSh ${product.price.toLocaleString()}</span>
+                <div class="price-item" style="flex-direction: column; align-items: flex-start;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
+                        <span style="font-weight: 600; font-size: 1.05rem;">${product.name}</span>
+                        <span class="price" style="font-size: 1.2rem;">TSh ${product.price.toLocaleString()}</span>
+                    </div>
+                    ${product.description ? `
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">
+                            ${product.description}
+                        </p>
+                    ` : ''}
                 </div>
             `).join('') : '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Hakuna bidhaa zilizowekwa</p>'}
         </div>
@@ -1266,8 +1280,13 @@ function getCategoriesPage() {
         {name: "Cosmetics & Beauty", icon: "fa-spray-can", color: "#EC4899"},
         {name: "Snacks & Drinks", icon: "fa-cookie-bite", color: "#F59E0B"},
         {name: "Stationery", icon: "fa-pen", color: "#3B82F6"},
-        {name: "Transport", icon: "fa-motorcycle", color: "#8B5CF6"},
-        {name: "Electronics", icon: "fa-mobile-alt", color: "#10B981"}
+        {name: "Dressing & Viatu", icon: "fa-tshirt", color: "#8B5CF6"},
+        {name: "Accessories", icon: "fa-gem", color: "#06B6D4"},
+        {name: "Jewelry", icon: "fa-ring", color: "#F97316"},
+        {name: "Vyombo vya Jikoni", icon: "fa-blender", color: "#10B981"},
+        {name: "Mixed Products", icon: "fa-layer-group", color: "#6366F1"},
+        {name: "Transport", icon: "fa-motorcycle", color: "#14B8A6"},
+        {name: "Electronics", icon: "fa-mobile-alt", color: "#A855F7"}
     ];
 
     return `
@@ -1340,6 +1359,11 @@ function getRegisterPage() {
                         <option>Cosmetics & Beauty</option>
                         <option>Snacks & Drinks</option>
                         <option>Stationery</option>
+                        <option>Dressing & Viatu</option>
+                        <option>Accessories</option>
+                        <option>Jewelry</option>
+                        <option>Vyombo vya Jikoni</option>
+                        <option>Mixed Products</option>
                         <option>Transport</option>
                         <option>Electronics</option>
                     </select>
@@ -1414,13 +1438,13 @@ function getTermsPage() {
                     <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>2.3 Utoaji wa Haraka:</strong> Wauzaji lazima watimize maagizo kwa wakati na wajulishe wateja kuhusu ucheleweshaji wowote.</p>
                     
                     <p style="margin-bottom: 0; line-height: 1.8;"><strong>2.4 Huduma kwa Wateja:</strong> Itakiwa kutoa huduma nzuri kwa wateja na kujibu maswali na malalamiko kwa haraka.</p>
-                    <p style="margin-bottom: 0; line-height: 1.8;"><strong>2.4 Kulipia Ada:</strong> Kulipa kiwango cha 2000/= kila ifikapo mwisho wa mwezi kwa kuonana direct na Admin ama kulipia katika halopesa 0624945919 (jina: Zeyana Thabit Juma).</p>
+                    <p style="margin-bottom: 0; line-height: 1.8;"><strong>2.5 Kulipia Ada:</strong> Kulipa kiwango cha 2000/= kila ifikapo mwisho wa mwezi kwa kuonana direct na Admin ama kulipia katika halopesa 0624945919 (jina: Zeyana Thabit Juma).</p>
                 </div>
             </div>
 
             <div style="margin-bottom: 2rem;">
                 <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class ="fas fa-shopping-cart"></i> 3. Majukumu ya Wanunuzi
+                    <i class="fas fa-shopping-cart"></i> 3. Majukumu ya Wanunuzi
                 </h3>
                 <div style="background: var(--content-bg); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
                     <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>3.1 Maagizo ya Kweli:</strong> Weka maagizo ya bidhaa unayohitaji tu. Usiagize bidhaa bila nia ya kununua.</p>
@@ -1459,7 +1483,7 @@ function getTermsPage() {
                         <li>Spam au matangazo yasiyohitajika</li>
                         <li>Matendo ya uonevu au uchochezi</li>
                         <li>Kujaribu kuingia bila idhini kwenye akaunti za wengine</li>
-                        <li>Kutolipia ada miezi mitatu mfululizo bila ya kutoa dharura yoyote</li>
+                        <li>Kutolipia ada miezi mitatu mfululizo bila ya kutoa dharuru yoyote</li>
                     </ul>
                 </div>
             </div>

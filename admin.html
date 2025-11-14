@@ -1203,7 +1203,7 @@
                                 <input type="number" class="form-control" id="productPrice" placeholder="3000" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Maelezo</label>
+                                <label class="form-label">Maelezo / Caption</label>
                                 <textarea class="form-control" id="productDescription" rows="3" placeholder="Eleza bidhaa yako..."></textarea>
                             </div>
                             <div class="form-group">
@@ -1213,9 +1213,13 @@
                                     <option>Cosmetics & Beauty</option>
                                     <option>Snacks & Drinks</option>
                                     <option>Stationery</option>
+                                    <option>Dressing & Viatu</option>
+                                    <option>Accessories</option>
+                                    <option>Jewelry</option>
+                                    <option>Vyombo vya Jikoni</option>
+                                    <option>Mixed Products</option>
                                     <option>Electronics</option>
                                     <option>Transport</option>
-                                    <option>Mengineyo</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">
@@ -1277,6 +1281,11 @@
                                     <option>Cosmetics & Beauty</option>
                                     <option>Snacks & Drinks</option>
                                     <option>Stationery</option>
+                                    <option>Dressing & Viatu</option>
+                                    <option>Accessories</option>
+                                    <option>Jewelry</option>
+                                    <option>Vyombo vya Jikoni</option>
+                                    <option>Mixed Products</option>
                                     <option>Electronics</option>
                                     <option>Transport</option>
                                 </select>
@@ -1329,7 +1338,7 @@
                         <input type="number" class="form-control" id="editProductPrice" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Maelezo</label>
+                        <label class="form-label">Maelezo / Caption</label>
                         <textarea class="form-control" id="editProductDescription" rows="3"></textarea>
                     </div>
                     <div class="form-group">
@@ -1339,9 +1348,13 @@
                             <option>Cosmetics & Beauty</option>
                             <option>Snacks & Drinks</option>
                             <option>Stationery</option>
+                            <option>Dressing & Viatu</option>
+                            <option>Accessories</option>
+                            <option>Jewelry</option>
+                            <option>Vyombo vya Jikoni</option>
+                            <option>Mixed Products</option>
                             <option>Electronics</option>
                             <option>Transport</option>
-                            <option>Mengineyo</option>
                         </select>
                     </div>
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -1539,12 +1552,18 @@
                 `;
                 
                 products.forEach(product => {
+                    const description = product.description ? 
+                        (product.description.length > 50 ? 
+                            product.description.substring(0, 50) + '...' : 
+                            product.description) : 
+                        '-';
+                    
                     html += `
                         <tr>
                             <td><strong>${product.name}</strong></td>
                             <td><span style="color: var(--primary); font-weight: 700;">TSh ${product.price.toLocaleString()}</span></td>
-                            <td>${product.category || 'N/A'}</td>
-                            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${product.description || '-'}</td>
+                            <td><span style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; display: inline-block;">${product.category || 'N/A'}</span></td>
+                            <td style="max-width: 200px;" title="${product.description || ''}">${description}</td>
                             <td>
                                 <div class="action-btns">
                                     <button class="btn btn-warning btn-sm" onclick="editProduct('${product.id}')">
@@ -1798,7 +1817,7 @@
             document.getElementById('profileCategory').value = currentUser.category || '';
         }
 
-       // Update Profile
+        // Update Profile
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1890,6 +1909,10 @@
                 'profile': 'Profile Settings'
             };
             document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
+            
+            if (window.innerWidth <= 1024) {
+                toggleSidebar();
+            }
         }
 
         // Close Modal
@@ -1900,6 +1923,7 @@
         // Toggle Sidebar
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
         }
 
         // Drag and Drop
@@ -1941,12 +1965,14 @@
         document.addEventListener('click', function(e) {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.querySelector('.menu-toggle');
+            const overlay = document.getElementById('sidebarOverlay');
             
             if (window.innerWidth <= 1024 && 
                 sidebar && sidebar.classList.contains('active') && 
                 !sidebar.contains(e.target) && 
                 (!toggle || !toggle.contains(e.target))) {
                 sidebar.classList.remove('active');
+                overlay.classList.remove('active');
             }
         });
     </script>
