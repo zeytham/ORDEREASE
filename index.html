@@ -365,14 +365,58 @@
         .product-item {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 0.75rem 0;
             border-bottom: 1px solid var(--border);
             transition: all 0.3s;
+            gap: 0.75rem;
         }
         
         .product-item:hover {
             padding-left: 10px;
             background: rgba(34, 197, 94, 0.05);
+        }
+        
+        .product-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .product-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-order-small {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.875rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+        }
+        
+        .btn-order-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.5);
+        }
+        
+        .btn-order-small:active {
+            transform: translateY(0);
+        }
+        
+        .btn-order-small i {
+            font-size: 0.9rem;
         }
         
         .price {
@@ -736,6 +780,26 @@
                 width: 100%;
             }
             
+            .btn-order-small {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+            
+            .btn-order-small i {
+                font-size: 0.8rem;
+            }
+            
+            .product-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .product-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
             .logo-text {
                 font-size: 1.25rem;
             }
@@ -954,6 +1018,23 @@ function stopAutoPlay(vendorId) {
     }
 }
 
+// Order Product Function
+function orderProduct(vendorPhone, vendorName, productName, productPrice) {
+    const message = `🛒 *MPYA ORDER - OrderEase*
+
+Habari *${vendorName}*! 👋
+
+Nataka kuweka order kwa:
+📦 *Bidhaa:* ${productName}
+💰 *Bei:* TSh ${productPrice.toLocaleString()}
+
+━━━━━━━━━━━━━━━━━
+✅ Order kupitia OrderEase Platform
+🏛️ Abdulrahman Al-Sumait University`;
+
+    window.open(`https://wa.me/${vendorPhone}?text=${encodeURIComponent(message)}`, '_blank');
+}
+
 // Render Vendors
 function renderVendors(vendorsList) {
     const grid = document.getElementById('vendorsGrid');
@@ -1012,16 +1093,24 @@ function renderVendors(vendorsList) {
                     </h4>
                     ${vendor.products.length > 0 ? `
                         ${vendor.products.slice(0, 3).map(product => `
-                            <div class="product-item" style="flex-direction: column; align-items: flex-start; padding: 1rem 0;">
-                                <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
-                                    <span style="font-weight: 600;">${product.name}</span>
-                                    <span class="price">TSh ${product.price.toLocaleString()}</span>
+                            <div class="product-item">
+                                <div class="product-info">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <span style="font-weight: 600;">${product.name}</span>
+                                    </div>
+                                    ${product.description ? `
+                                        <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5; margin: 0; max-height: 3em; overflow: hidden;">
+                                            ${product.description}
+                                        </p>
+                                    ` : ''}
                                 </div>
-                                ${product.description ? `
-                                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5; margin: 0; max-height: 3em; overflow: hidden;">
-                                        ${product.description}
-                                    </p>
-                                ` : ''}
+                                <div class="product-actions">
+                                    <span class="price" style="font-size: 1rem;">TSh ${product.price.toLocaleString()}</span>
+                                    <button class="btn-order-small" onclick="orderProduct('${vendor.phone}', '${vendor.business_name.replace(/'/g, "\\'")}', '${product.name.replace(/'/g, "\\'")}', ${product.price})" title="Weka order kwa ${product.name}">
+                                        <i class="fab fa-whatsapp"></i>
+                                        Order
+                                    </button>
+                                </div>
                             </div>
                         `).join('')}
                         ${vendor.products.length > 3 ? `
@@ -1080,16 +1169,22 @@ function showVendorDetails(vendorId) {
         
         <div class="price-list">
             ${vendor.products.length > 0 ? vendor.products.map(product => `
-                <div class="price-item" style="flex-direction: column; align-items: flex-start;">
-                    <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
-                        <span style="font-weight: 600; font-size: 1.05rem;">${product.name}</span>
-                        <span class="price" style="font-size: 1.2rem;">TSh ${product.price.toLocaleString()}</span>
+                <div class="price-item" style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-weight: 600; font-size: 1.05rem;">${product.name}</span>
+                            <span class="price" style="font-size: 1.1rem; white-space: nowrap; margin-left: 1rem;">TSh ${product.price.toLocaleString()}</span>
+                        </div>
+                        ${product.description ? `
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">
+                                ${product.description}
+                            </p>
+                        ` : ''}
                     </div>
-                    ${product.description ? `
-                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">
-                            ${product.description}
-                        </p>
-                    ` : ''}
+                    <button class="btn-order-small" onclick="orderProduct('${vendor.phone}', '${vendor.business_name.replace(/'/g, "\\'")}', '${product.name.replace(/'/g, "\\'")}', ${product.price})" title="Weka order kwa ${product.name}">
+                        <i class="fab fa-whatsapp"></i>
+                        Order
+                    </button>
                 </div>
             `).join('') : '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Hakuna bidhaa zilizowekwa</p>'}
         </div>
@@ -1437,7 +1532,7 @@ function getTermsPage() {
                     
                     <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>2.3 Utoaji wa Haraka:</strong> Wauzaji lazima watimize maagizo kwa wakati na wajulishe wateja kuhusu ucheleweshaji wowote.</p>
                     
-                    <p style="margin-bottom: 0; line-height: 1.8;"><strong>2.4 Huduma kwa Wateja:</strong> Itakiwa kutoa huduma nzuri kwa wateja na kujibu maswali na malalamiko kwa haraka.</p>
+                    <p style="margin-bottom: 1rem; line-height: 1.8;"><strong>2.4 Huduma kwa Wateja:</strong> Itakiwa kutoa huduma nzuri kwa wateja na kujibu maswali na malalamiko kwa haraka.</p>
                     <p style="margin-bottom: 0; line-height: 1.8;"><strong>2.5 Kulipia Ada:</strong> Kulipa kiwango cha 2000/= kila ifikapo mwisho wa mwezi kwa kuonana direct na Admin ama kulipia katika halopesa 0624945919 (jina: Zeyana Thabit Juma).</p>
                 </div>
             </div>
